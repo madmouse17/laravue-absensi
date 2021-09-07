@@ -29,6 +29,8 @@
         "@fortawesome/fontawesome-free": "^5.15.4",
         "@popperjs/core": "2.4.4",
         "chart.js": "^2.9.4",
+        "primeicons": "^4.1.0",
+        "primevue": "^3.7.0",
         "sweetalert2": "^11.1.4",
         "vue-sweetalert2": "^5.0.2"
     }

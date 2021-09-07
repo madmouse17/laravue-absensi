@@ -33,29 +33,26 @@ class UserController extends Controller
      */
     public function json(Request $request)
     {
-        if ($request->ajax()) {
-            DB::statement(DB::raw('set @rownum=0'));
-            $users = User::select([
-                DB::raw('@rownum  := @rownum  + 1 AS rownum'),
-                'id',
-                'name',
-                'email',
-                'created_at',
-            ]);
 
-            return Datatables::of($users)
-                ->editColumn('created_at', function ($users) {
-                    if ($users->created_at != null) {
-                        return $users->created_at->format('d-M-Y');
-                    }
-                })
-                ->editColumn('action', function ($users) {
-                    return view('yajra_buttons', ['id' => $users->id])->render();
-                })
-                ->make(true);
-        } else {
-            return response()->json(['status' => 'false', 'message' => "Access only ajax request"]);
-        }
+        DB::statement(DB::raw('set @rownum=0'));
+        $users = User::select([
+            DB::raw('@rownum  := @rownum  + 1 AS rownum'),
+            'id',
+            'name',
+            'email',
+            'created_at',
+        ]);
+
+        return Datatables::of($users)
+            ->editColumn('created_at', function ($users) {
+                if ($users->created_at != null) {
+                    return $users->created_at->format('d-M-Y');
+                }
+            })
+            // ->editColumn('action', function ($users) {
+            //     return view('yajra_buttons', ['id' => $users->id])->render();
+            // })
+            ->make(true);
     }
 
     /**
@@ -108,10 +105,10 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($user)
+    public function edit(User $user)
     {
-        $users = User::findorFail($user);
-        return Inertia::render("Admin/User/Edit", ['user' => $users]);
+
+        return Inertia::render("Admin/User/Edit", ['user' => $user]);
     }
 
     /**
@@ -121,9 +118,8 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $user)
+    public function update(Request $request, User $user)
     {
-        $update = User::FindorFail($user);
         if ($request->password == '') {
             // $request->validate([
             //     'name' => 'required|string|max:255',
@@ -132,10 +128,10 @@ class UserController extends Controller
             Validator::make($request->all(), [
                 'name' => 'required|string',
                 'email' => [Rule::unique('users', 'email')
-                    ->ignore($update->id)],
+                    ->ignore($user->id)],
             ]);
 
-            $update->update([
+            $user->update([
                 'name' => $request->name,
                 'email' => $request->email
             ]);
@@ -145,10 +141,10 @@ class UserController extends Controller
                 'email' => 'required|string|email|max:255|unique:users',
                 'password' => ['required', 'confirmed', Password::defaults()],
             ]);
-            $update->update($request->all);
+            $user->update($request->all);
         }
 
-        return Redirect::route('user.index')->with('message', 'User ' . $update->name . ' Berhasil Diupdate');
+        return Redirect::route('user.index')->with('message', 'User ' . $user->name . ' Berhasil Diupdate');
     }
 
     /**
@@ -157,8 +153,10 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(User $user)
     {
-        //
+        $user->delete();
+
+        return Redirect::route('user.index')->with('message', 'User ' . $user->name . ' Berhasil Dihapus');
     }
 }

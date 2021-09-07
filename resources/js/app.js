@@ -7,6 +7,7 @@ import VueSweetalert2 from "vue-sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "@/assets/tailwind.css";
+import PrimeVue from 'primevue/config';
 const appName =
     window.document.getElementsByTagName("title")[0]?.innerText || "Laravel";
 
@@ -17,6 +18,7 @@ createInertiaApp({
         return createApp({ render: () => h(app, props) })
             .use(plugin)
 	    .use(VueSweetalert2)
+	    .use(PrimeVue)
             .mixin({ methods: { route } })
             .mount(el);
     },

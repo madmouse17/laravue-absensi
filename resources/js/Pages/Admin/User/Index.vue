@@ -17,41 +17,93 @@
                     "
                 >
                     <div :alert="Alert"></div>
-                    <div class="rounded-t mb-0 px-4 py-3 border-0">
-                        <div class="flex flex-wrap items-center">
-                            <div
-                                class="
-                                    relative
-                                    w-full
-                                    px-4
-                                    max-w-full
-                                    flex-grow flex-1
-                                "
-                            >
-                                <h3
-                                    class="
-                                        font-semibold
-                                        text-lgtext-blueGray-700
-                                    "
-                                >
-                                    User Tables
-                                </h3>
-                            </div>
-                        </div>
-                    </div>
-
                     <div class="block w-full overflow-x-auto">
                         <!-- Projects table -->
-                        <table class="display" id="users-table">
-                            <thead>
-                                <tr>
-                                    <th>No</th>
-                                    <th>Nama</th>
-                                    <th>Tanggal Buat</th>
-                                    <th>Aksi</th>
-                                </tr>
-                            </thead>
-                        </table>
+                        <DataTable
+                            :value="users"
+                            showGridlines
+                            stripedRows
+                            :paginator="true"
+                            :rows="10"
+                            paginatorTemplate="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
+                            :rowsPerPageOptions="[10, 20, 50]"
+                            responsiveLayout="scroll"
+                            currentPageReportTemplate="Showing {first} to {last} of {totalRecords}"
+                            sortField="rownum"
+                            :sortOrder="-1"
+                            :globalFilterFields="['name', 'email']"
+                            dataKey="id"
+                            v-model:filters="filters"
+                            filterDisplay="menu"
+                            :loading="loading"
+                            :scrollable="true"
+                            scrollHeight="400px"
+                            ref="dt"
+                        >
+                            <template #header>
+                                <div class="table-header">User Tables</div>
+                                <div class="p-d-flex p-flex-wrap">
+                                    <Button
+                                        icon="pi pi-external-link"
+                                        label="Export"
+                                        class="p-button-success"
+                                        @click="exportCSV($event)"
+                                    />
+                                    <span
+                                        class="p-mr-2 p-mb-2 p-input-icon-left"
+                                    >
+                                        <i class="pi pi-search" />
+                                        <InputText
+                                            v-model="filters['global'].value"
+                                            placeholder="Keyword Search"
+                                        />
+                                    </span>
+                                    <Button
+                                        label="Tambah Data"
+                                        class="p-mr-2 p-mb-2"
+                                    />
+                                </div>
+                            </template>
+                            <template #empty> Data User tidak ada </template>
+                            <template #loading>
+                                Sedang Memuat Data User.Mohon Tunggu.
+                            </template>
+                            <Column
+                                field="rownum"
+                                header="No"
+                                :sortable="true"
+                            ></Column>
+                            <Column
+                                field="name"
+                                header="Nama"
+                                :sortable="true"
+                            ></Column>
+                            <Column
+                                field="email"
+                                header="Email"
+                                :sortable="true"
+                            ></Column>
+                            <Column
+                                field="created_at"
+                                header="Tanggal"
+                                :sortable="true"
+                            ></Column>
+                            <template #paginatorLeft>
+                                <Button
+                                    type="button"
+                                    icon="pi pi-refresh"
+                                    class="p-button-text"
+                                />
+                            </template>
+                            <template #paginatorRight>
+                                <Button
+                                    type="button"
+                                    icon="pi pi-cloud"
+                                    class="p-button-text"
+                                />
+                            </template>
+                            <!-- <Column field="color" header="Color"></Column> -->
+                        </DataTable>
                     </div>
                 </div>
             </div>
@@ -60,56 +112,53 @@
 </template>
 <script>
 import AdminLayouts from "@/Layouts/Admin.vue";
+import UserService from "../Service/Service";
 import { Link } from "@inertiajs/inertia-vue3";
 import { Head } from "@inertiajs/inertia-vue3";
 import { Inertia } from "@inertiajs/inertia";
+import Button from "primevue/button";
+import DataTable from "primevue/datatable";
+import Column from "primevue/column";
+import { ref, onMounted } from "vue";
+import { FilterMatchMode, FilterOperator } from "primevue/api";
+import InputText from "primevue/inputtext";
 export default {
     props: ["flash"],
     components: {
         AdminLayouts,
         Link,
         Head,
+        Button,
+        DataTable,
+        Column,
+        InputText,
+    },
+    data() {
+        return {
+            users: null,
+            filters: null,
+            loading: true,
+        };
     },
     created() {
-        $(document).ready(function () {
-            $("#users-table").DataTable({
-                processing: true,
-                serverside: true,
-                ajax: "/admin/user/json",
-                columns: [
-                    { data: "rownum", name: "rownum" },
-                    { data: "name", name: "name" },
-                    { data: "created_at", name: "created_at" },
-                    {
-                        data: "action",
-                        name: "action",
-                        orderable: false,
-                        searchable: false,
-                    },
-                ],
-                dom: "Blfrtip",
-                lengthMenu: [
-                    [10, 25, 50, -1],
-                    ["10 Filas", "25 Filas", "50 Filas", "Show All"],
-                ],
-
-                dom: "Bfrtip",
-                buttons: [
-                    "pageLength",
-                    {
-                        extend: "collection",
-                        text: "Export",
-                        buttons: ["copy", "excel", "csv", "pdf", "print"],
-                    },
-                    {
-                        text: "Tambah Data",
-                        action: function (e, dt, button, config) {
-                            Inertia.get("/admin/user/create");
-                        },
-                    },
-                ],
-            });
+        this.userService = new UserService();
+        this.initFilters();
+    },
+    mounted() {
+        this.userService.getUser().then((data) => {
+            this.users = data;
+            this.loading = false;
         });
+    },
+    methods: {
+        initFilters() {
+            this.filters = {
+                global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+            };
+        },
+        exportCSV() {
+            this.$refs.dt.exportCSV();
+        },
     },
     computed: {
         Alert() {
