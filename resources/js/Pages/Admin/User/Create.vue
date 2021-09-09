@@ -70,7 +70,6 @@ import AdminLayouts from "@/Layouts/Admin.vue";
 import { Link } from "@inertiajs/inertia-vue3";
 import { Head } from "@inertiajs/inertia-vue3";
 import { Inertia } from "@inertiajs/inertia";
-import VueSweetalert2 from "vue-sweetalert2";
 export default {
     props: ["errors"],
     components: {
@@ -98,6 +97,12 @@ export default {
             this.form.post(this.route("user.store"), {
                 preserveState: true,
                 replace: true,
+            });
+            this.$toast.add({
+                severity: "success",
+                summary: "Successful",
+                detail: "Users Deleted",
+                life: 3000,
             });
         },
     },

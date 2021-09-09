@@ -28,10 +28,10 @@ Route::group(['prefix' => 'admin',  'middleware' => 'auth'], function () {
     Route::get('/dashboard', function () {
         return Inertia::render('Admin/Dashboard');
     })->name('dashboard');
-    Route::get('/user/json', [UserController::class,'json']);
+    Route::get('/user/json', [UserController::class, 'json']);
+    Route::delete('user/destroy-all/{id}', [UserController::class, 'deleteAll'])->name('user.deleteAll');
     Route::resource('/user', UserController::class);
-   
 });
 
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

@@ -38,7 +38,7 @@
                 "
                 href="javascript:void(0)"
             >
-                Dashboard
+                {{ navbarTitle }}
             </a>
             <!-- Form -->
             <form
@@ -116,6 +116,7 @@
 import UserDropdown from "@/Components/notus/Dropdowns/UserDropdown.vue";
 
 export default {
+    props: ["navbarTitle"],
     components: {
         UserDropdown,
     },

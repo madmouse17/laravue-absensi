@@ -227,12 +227,12 @@
                     <li class="items-center">
                         <NavbarLink
                             :href="route('user.index')"
-                            :active="$page.url.startsWith('/admin/user')"
+                            :active="route().current('user.*')"
                             class="text-xs uppercase py-3 font-bold block"
                         >
                             <IconLink
                                 :href="route('user.index')"
-                                :active="route().current('user.index')"
+                                :active="route().current('user.*')"
                                 class="fas fa-user mr-2 text-sm"
                             >
                             </IconLink>
@@ -241,27 +241,18 @@
                     </li>
 
                     <li class="items-center">
-                        <NavbarLink href="`/admin/tables`">
-                            <a
-                                :href="`href`"
-                                @click="navigate"
-                                class="text-xs uppercase py-3 font-bold block"
-                                :class="[
-                                    isActive
-                                        ? 'text-emerald-500 hover:text-emerald-600'
-                                        : 'text-blueGray-700 hover:text-blueGray-500',
-                                ]"
+                        <NavbarLink
+                            :href="route('user.index')"
+                            :active="route().current('user.*')"
+                            class="text-xs uppercase py-3 font-bold block"
+                        >
+                            <IconLink
+                                :href="route('user.index')"
+                                :active="route().current('user.*')"
+                                class="fas fa-user mr-2 text-sm"
                             >
-                                <i
-                                    class="fas fa-table mr-2 text-sm"
-                                    :class="[
-                                        isActive
-                                            ? 'opacity-75'
-                                            : 'text-blueGray-300',
-                                    ]"
-                                ></i>
-                                Tables
-                            </a>
+                            </IconLink>
+                            Jabatan
                         </NavbarLink>
                     </li>
 

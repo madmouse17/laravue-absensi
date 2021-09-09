@@ -1,5 +1,6 @@
 <template>
-    <admin-layouts>
+    <admin-layouts navbarTitle="user">
+        <Toast />
         <Head title="User" />
         <div class="flex flex-wrap mt-4">
             <div class="w-full mb-12 px-4">
@@ -17,11 +18,52 @@
                     "
                 >
                     <div :alert="Alert"></div>
-                    <div class="block w-full overflow-x-auto">
+                    <div class="card">
+                        <Toolbar class="p-mb-4">
+                            <template #left>
+                                <Button
+                                    label="New"
+                                    icon="pi pi-plus"
+                                    class="p-button-success p-mr-2"
+                                    @click="openNew"
+                                />
+                                <Button
+                                    label="Delete"
+                                    icon="pi pi-trash"
+                                    class="p-button-danger"
+                                    @click="confirmDeleteSelected"
+                                    :disabled="
+                                        !selectedUsers || !selectedUsers.length
+                                    "
+                                />
+                            </template>
+
+                            <template #right>
+                                <Button
+                                    label="Export CSV"
+                                    icon="pi pi-download"
+                                    class="p-button-help"
+                                    @click="exportCSV($event)"
+                                />
+                            </template>
+                        </Toolbar>
+                        <Toolbar>
+                            <template #left>
+                                <div class="table-header">User Tables</div>
+                            </template>
+                            <template #right>
+                                <span class="p-mr-2 p-mb-2 p-input-icon-left">
+                                    <i class="pi pi-search" />
+                                    <InputText
+                                        v-model="filters['global'].value"
+                                        placeholder="Keyword Search"
+                                    />
+                                </span>
+                            </template>
+                        </Toolbar>
                         <!-- Projects table -->
                         <DataTable
                             :value="users"
-                            showGridlines
                             stripedRows
                             :paginator="true"
                             :rows="10"
@@ -39,35 +81,20 @@
                             :scrollable="true"
                             scrollHeight="400px"
                             ref="dt"
+                            v-model:selection="selectedUsers"
+                            :resizableColumns="true"
+                            columnResizeMode="fit"
+                            showGridlines
                         >
-                            <template #header>
-                                <div class="table-header">User Tables</div>
-                                <div class="p-d-flex p-flex-wrap">
-                                    <Button
-                                        icon="pi pi-external-link"
-                                        label="Export"
-                                        class="p-button-success"
-                                        @click="exportCSV($event)"
-                                    />
-                                    <span
-                                        class="p-mr-2 p-mb-2 p-input-icon-left"
-                                    >
-                                        <i class="pi pi-search" />
-                                        <InputText
-                                            v-model="filters['global'].value"
-                                            placeholder="Keyword Search"
-                                        />
-                                    </span>
-                                    <Button
-                                        label="Tambah Data"
-                                        class="p-mr-2 p-mb-2"
-                                    />
-                                </div>
-                            </template>
                             <template #empty> Data User tidak ada </template>
                             <template #loading>
                                 Sedang Memuat Data User.Mohon Tunggu.
                             </template>
+                            <Column
+                                selectionMode="multiple"
+                                style="width: 1rem"
+                                :exportable="false"
+                            ></Column>
                             <Column
                                 field="rownum"
                                 header="No"
@@ -85,29 +112,99 @@
                             ></Column>
                             <Column
                                 field="created_at"
-                                header="Tanggal"
+                                header="Tanggal Buat"
                                 :sortable="true"
                             ></Column>
-                            <template #paginatorLeft>
-                                <Button
-                                    type="button"
-                                    icon="pi pi-refresh"
-                                    class="p-button-text"
-                                />
-                            </template>
-                            <template #paginatorRight>
-                                <Button
-                                    type="button"
-                                    icon="pi pi-cloud"
-                                    class="p-button-text"
-                                />
-                            </template>
+                            <Column :exportable="false" header="Aksi">
+                                <template #body="slotProps">
+                                    <Button
+                                        icon="pi pi-pencil"
+                                        class="
+                                            p-button-rounded
+                                            p-button-success
+                                            p-mr-2
+                                        "
+                                        @click="editUser(slotProps.data)"
+                                    />
+                                    <Button
+                                        icon="pi pi-trash"
+                                        class="
+                                            p-button-rounded p-button-warning
+                                        "
+                                        @click="
+                                            confirmDeleteUser(slotProps.data)
+                                        "
+                                    />
+                                </template>
+                            </Column>
                             <!-- <Column field="color" header="Color"></Column> -->
                         </DataTable>
                     </div>
                 </div>
             </div>
         </div>
+        <Dialog
+            v-model:visible="deleteUserDialog"
+            :style="{ width: '450px' }"
+            header="Confirm"
+            :modal="true"
+        >
+            <div class="confirmation-content">
+                <i
+                    class="pi pi-exclamation-triangle p-mr-3"
+                    style="font-size: 2rem"
+                />
+                <span v-if="user"
+                    >Are you sure you want to delete <b>{{ user.name }}</b
+                    >?</span
+                >
+            </div>
+            <template #footer>
+                <Button
+                    label="No"
+                    icon="pi pi-times"
+                    class="p-button-text"
+                    @click="deleteUserDialog = false"
+                />
+                <Button
+                    label="Yes"
+                    icon="pi pi-check"
+                    class="p-button-text"
+                    @click="deleteUser"
+                />
+            </template>
+        </Dialog>
+
+        <Dialog
+            v-model:visible="deleteUsersDialog"
+            :style="{ width: '450px' }"
+            header="Confirm"
+            :modal="true"
+        >
+            <div class="confirmation-content">
+                <i
+                    class="pi pi-exclamation-triangle p-mr-3"
+                    style="font-size: 2rem"
+                />
+                <span v-if="user"
+                    >Are you sure you want to delete the selected Users?</span
+                >
+            </div>
+            <template #footer>
+                <Button
+                    label="No"
+                    icon="pi pi-times"
+                    class="p-button-text"
+                    @click="deleteUsersDialog = false"
+                />
+                <Button
+                    label="Yes"
+                    icon="pi pi-check"
+                    class="p-button-text"
+                    @click="deleteSelectedUsers"
+                />
+            </template>
+        </Dialog>
     </admin-layouts>
 </template>
 <script>
@@ -119,9 +216,11 @@ import { Inertia } from "@inertiajs/inertia";
 import Button from "primevue/button";
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
-import { ref, onMounted } from "vue";
 import { FilterMatchMode, FilterOperator } from "primevue/api";
 import InputText from "primevue/inputtext";
+import Toolbar from "primevue/toolbar";
+import Dialog from "primevue/dialog";
+import Toast from "primevue/toast";
 export default {
     props: ["flash"],
     components: {
@@ -132,12 +231,20 @@ export default {
         DataTable,
         Column,
         InputText,
+        Toolbar,
+        Dialog,
+        Toast,
     },
     data() {
         return {
             users: null,
             filters: null,
             loading: true,
+            selectedUsers: null,
+            userDialog: false,
+            deleteUserDialog: false,
+            deleteUsersDialog: false,
+            user: {},
         };
     },
     created() {
@@ -145,12 +252,57 @@ export default {
         this.initFilters();
     },
     mounted() {
+        this.successAlert();
         this.userService.getUser().then((data) => {
             this.users = data;
             this.loading = false;
         });
     },
     methods: {
+        openNew() {
+            Inertia.get(route("user.create"));
+        },
+        editUser(data) {
+            Inertia.get(route("user.edit", { user: data.id }));
+        },
+        confirmDeleteUser(user) {
+            this.user = user;
+            this.deleteUserDialog = true;
+        },
+        deleteUser() {
+            Inertia.delete(route("user.destroy", { user: this.user.id }));
+            this.users = this.users.filter((val) => val.id !== this.user.id);
+            this.deleteUserDialog = false;
+            this.user = {};
+            this.$toast.add({
+                severity: "success",
+                summary: "Successful",
+                detail: "Users Deleted",
+                life: 3000,
+            });
+        },
+        confirmDeleteSelected() {
+            this.deleteUsersDialog = true;
+        },
+        deleteSelectedUsers() {
+            let lists = [];
+            $.each(this.selectedUsers, function (key, value) {
+                lists.push(value.id);
+            });
+            Inertia.delete(route("user.deleteAll", { id: lists }));
+
+            this.users = this.users.filter(
+                (val) => !this.selectedUsers.includes(val)
+            );
+            this.deleteUsersDialog = false;
+            this.selectedUsers = null;
+            this.$toast.add({
+                severity: "success",
+                summary: "Successful",
+                detail: "Users Deleted",
+                life: 3000,
+            });
+        },
         initFilters() {
             this.filters = {
                 global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -159,21 +311,27 @@ export default {
         exportCSV() {
             this.$refs.dt.exportCSV();
         },
-    },
-    computed: {
-        Alert() {
-            if (this.flash.message) {
-                const swall = this.$swal({
-                    toast: !0,
-                    position: "top-end",
-                    showConfirmButton: !1,
-                    timer: 3e3,
-                    icon: "success",
-                    text: this.flash.message,
+        successAlert() {
+            if (this.flash.message != null) {
+                this.$toast.add({
+                    severity: "success",
+                    summary: "Success Message",
+                    detail: this.flash.message,
+                    life: 3000,
                 });
-                return swall;
             }
         },
     },
 };
 </script>
+<style scoped lang="scss">
+@media screen and (max-width: 960px) {
+    ::v-deep(.p-toolbar) {
+        flex-wrap: wrap;
+
+        .p-button {
+            margin-bottom: 0.25rem;
+        }
+    }
+}
+</style>

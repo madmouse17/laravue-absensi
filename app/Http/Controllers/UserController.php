@@ -157,6 +157,13 @@ class UserController extends Controller
     {
         $user->delete();
 
-        return Redirect::route('user.index')->with('message', 'User ' . $user->name . ' Berhasil Dihapus');
+        return Redirect::route('user.index');
+    }
+    public function deleteAll($id)
+    {
+        // dd($user);
+        $ids = explode(",", $id);
+        User::whereIn('id', $ids)->delete();
+        return Redirect::route('user.index');
     }
 }
