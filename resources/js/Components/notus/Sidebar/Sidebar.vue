@@ -242,14 +242,14 @@
 
                     <li class="items-center">
                         <NavbarLink
-                            :href="route('user.index')"
-                            :active="route().current('user.*')"
+                            :href="route('position.index')"
+                            :active="route().current('position.*')"
                             class="text-xs uppercase py-3 font-bold block"
                         >
                             <IconLink
-                                :href="route('user.index')"
-                                :active="route().current('user.*')"
-                                class="fas fa-user mr-2 text-sm"
+                                :href="route('position.index')"
+                                :active="route().current('position.*')"
+                                class="fas fa-sitemap mr-2 text-sm"
                             >
                             </IconLink>
                             Jabatan

@@ -21,7 +21,7 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
         return Inertia::render("Admin/User/Index");
     }
@@ -31,7 +31,7 @@ class UserController extends Controller
      * return Datatables
      * @return \Illuminate\Http\Request $request
      */
-    public function json(Request $request)
+    public function json()
     {
 
         DB::statement(DB::raw('set @rownum=0'));
@@ -49,9 +49,6 @@ class UserController extends Controller
                     return $users->created_at->format('d-M-Y');
                 }
             })
-            // ->editColumn('action', function ($users) {
-            //     return view('yajra_buttons', ['id' => $users->id])->render();
-            // })
             ->make(true);
     }
 
@@ -84,7 +81,7 @@ class UserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
-        //    return Inertia::render("Admin/User/Index", $user);
+
         return Redirect::route('user.index')->with('message', 'User ' . $request->name . ' Berhasil Dibuat');
     }
 
@@ -121,13 +118,9 @@ class UserController extends Controller
     public function update(Request $request, User $user)
     {
         if ($request->password == '') {
-            // $request->validate([
-            //     'name' => 'required|string|max:255',
-            //     'email' => 'required|string|email|max:255|unique:users' . $update->id,
-            // ]); 
             Validator::make($request->all(), [
                 'name' => 'required|string',
-                'email' => [Rule::unique('users', 'email')
+                'email' => ['required', Rule::unique('users', 'email')
                     ->ignore($user->id)],
             ]);
 

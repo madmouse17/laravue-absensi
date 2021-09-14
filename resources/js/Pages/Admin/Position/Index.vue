@@ -1,7 +1,7 @@
 <template>
-    <admin-layouts navbarTitle="user">
+    <admin-layouts navbarTitle="jabatan">
         <Toast />
-        <Head title="User" />
+        <Head title="Jabatan" />
         <div class="flex flex-wrap mt-4">
             <div class="w-full mb-12 px-4">
                 <div
@@ -33,7 +33,8 @@
                                     class="p-button-danger"
                                     @click="confirmDeleteSelected"
                                     :disabled="
-                                        !selectedUsers || !selectedUsers.length
+                                        !selectedPositions ||
+                                        !selectedPositions.length
                                     "
                                 />
                             </template>
@@ -49,7 +50,7 @@
                         </Toolbar>
                         <Toolbar>
                             <template #left>
-                                <div class="table-header">User Tables</div>
+                                <div class="table-header">Jabatan Tables</div>
                             </template>
                             <template #right>
                                 <span class="p-mr-2 p-mb-2 p-input-icon-left">
@@ -63,7 +64,7 @@
                         </Toolbar>
                         <!-- Projects table -->
                         <DataTable
-                            :value="users"
+                            :value="positions"
                             stripedRows
                             :paginator="true"
                             :rows="10"
@@ -81,14 +82,14 @@
                             :scrollable="true"
                             scrollHeight="400px"
                             ref="dt"
-                            v-model:selection="selectedUsers"
+                            v-model:selection="selectedPositions"
                             :resizableColumns="true"
                             columnResizeMode="fit"
                             showGridlines
                         >
-                            <template #empty> Data User tidak ada </template>
+                            <template #empty> Data Jabatan tidak ada </template>
                             <template #loading>
-                                Sedang Memuat Data User.Mohon Tunggu.
+                                Sedang Memuat Data Jabatan.Mohon Tunggu.
                             </template>
                             <Column
                                 selectionMode="multiple"
@@ -106,8 +107,8 @@
                                 :sortable="true"
                             ></Column>
                             <Column
-                                field="email"
-                                header="Email"
+                                field="gaji"
+                                header="Gaji"
                                 :sortable="true"
                             ></Column>
                             <Column
@@ -124,7 +125,7 @@
                                             p-button-success
                                             p-mr-2
                                         "
-                                        @click="editUser(slotProps.data)"
+                                        @click="editPosition(slotProps.data)"
                                     />
                                     <Button
                                         icon="pi pi-trash"
@@ -132,19 +133,71 @@
                                             p-button-rounded p-button-warning
                                         "
                                         @click="
-                                            confirmDeleteUser(slotProps.data)
+                                            confirmDeletePosition(
+                                                slotProps.data
+                                            )
                                         "
                                     />
                                 </template>
                             </Column>
-                            <!-- <Column field="color" header="Color"></Column> -->
                         </DataTable>
                     </div>
                 </div>
             </div>
         </div>
+
         <Dialog
-            v-model:visible="deleteUserDialog"
+            v-model:visible="positionDialog"
+            :style="{ width: '450px' }"
+            header="Position Details"
+            :modal="true"
+            class="p-fluid"
+        >
+            <div class="p-field">
+                <label for="name">Jabatan</label>
+                <InputText
+                    id="name"
+                    v-model.trim="position.name"
+                    required="true"
+                    autofocus
+                    :class="{ 'p-invalid': submitted && !position.name }"
+                />
+                <small class="p-error" v-if="submitted && !position.name"
+                    >Name is required.</small
+                >
+            </div>
+            <div class="p-field">
+                <label for="gaji">Gaji</label>
+                <InputText
+                    id="gaji"
+                    type="number"
+                    v-model.trim="position.gaji"
+                    required="true"
+                    autofocus
+                    :class="{ 'p-invalid': submitted && !position.gaji }"
+                />
+                <small class="p-error" v-if="submitted && !position.gaji"
+                    >Gaji is required.</small
+                >
+            </div>
+            <template #footer>
+                <Button
+                    label="Cancel"
+                    icon="pi pi-times"
+                    class="p-button-text"
+                    @click="hideDialog"
+                />
+                <Button
+                    label="Save"
+                    icon="pi pi-check"
+                    class="p-button-text"
+                    @click="savePosition"
+                />
+            </template>
+        </Dialog>
+
+        <Dialog
+            v-model:visible="deletePositionDialog"
             :style="{ width: '450px' }"
             header="Confirm"
             :modal="true"
@@ -154,8 +207,8 @@
                     class="pi pi-exclamation-triangle p-mr-3"
                     style="font-size: 2rem"
                 />
-                <span v-if="user"
-                    >Apakah Kamu Yakin Ingin Menghapus <b>{{ user.name }}</b
+                <span v-if="position"
+                    >Apakah Kamu Yakin Ingin Menghapus <b>{{ position.name }}</b
                     >?</span
                 >
             </div>
@@ -164,19 +217,19 @@
                     label="No"
                     icon="pi pi-times"
                     class="p-button-text"
-                    @click="deleteUserDialog = false"
+                    @click="deletePositionDialog = false"
                 />
                 <Button
                     label="Yes"
                     icon="pi pi-check"
                     class="p-button-text"
-                    @click="deleteUser"
+                    @click="deletePosition"
                 />
             </template>
         </Dialog>
 
         <Dialog
-            v-model:visible="deleteUsersDialog"
+            v-model:visible="deletePositionsDialog"
             :style="{ width: '450px' }"
             header="Confirm"
             :modal="true"
@@ -186,8 +239,9 @@
                     class="pi pi-exclamation-triangle p-mr-3"
                     style="font-size: 2rem"
                 />
-                <span v-if="user"
-                    >Apakah Kamu Yakin Ingin Menghapus Users Yang Dipilih?</span
+                <span v-if="position"
+                    >Apakah Kamu Yakin Ingin Menghapus Jabatan Yang
+                    Dipilih?</span
                 >
             </div>
             <template #footer>
@@ -195,13 +249,13 @@
                     label="No"
                     icon="pi pi-times"
                     class="p-button-text"
-                    @click="deleteUsersDialog = false"
+                    @click="deletePositionsDialog = false"
                 />
                 <Button
                     label="Yes"
                     icon="pi pi-check"
                     class="p-button-text"
-                    @click="deleteSelectedUsers"
+                    @click="deleteSelectedPositions"
                 />
             </template>
         </Dialog>
@@ -209,7 +263,7 @@
 </template>
 <script>
 import AdminLayouts from "@/Layouts/Admin.vue";
-import UserService from "../Service/Service";
+import PositionService from "../Service/Service";
 import { Link } from "@inertiajs/inertia-vue3";
 import { Head } from "@inertiajs/inertia-vue3";
 import { Inertia } from "@inertiajs/inertia";
@@ -237,69 +291,161 @@ export default {
     },
     data() {
         return {
-            users: null,
+            positions: null,
             filters: null,
             loading: true,
-            selectedUsers: null,
-            userDialog: false,
-            deleteUserDialog: false,
-            deleteUsersDialog: false,
-            user: {},
+            selectedPositions: null,
+            positionDialog: false,
+            deletePositionDialog: false,
+            deletePositionsDialog: false,
+            position: {},
+            submitted: false,
         };
     },
     created() {
-        this.userService = new UserService();
+        this.positionService = new PositionService();
         this.initFilters();
     },
     mounted() {
         this.successAlert();
-        this.userService.getUser().then((data) => {
-            this.users = data;
+        this.positionService.getPosition().then((data) => {
+            this.positions = data;
             this.loading = false;
         });
     },
     methods: {
+        currentDate() {
+            const monthNames = [
+                "Jan",
+                "Feb",
+                "Mar",
+                "Apr",
+                "May",
+                "Jun",
+                "Jul",
+                "Aug",
+                "Sep",
+                "Oct",
+                "Nov",
+                "Dec",
+            ];
+
+            const current = new Date();
+            const date =
+                current.getDate() +
+                "-" +
+                monthNames[current.getMonth()] +
+                "-" +
+                current.getFullYear();
+            return date;
+        },
+        findIndexById(id) {
+            let index = -1;
+            for (let i = 0; i < this.positions.length; i++) {
+                if (this.positions[i].id === id) {
+                    index = i;
+                    break;
+                }
+            }
+
+            return index;
+        },
+        savePosition() {
+            this.submitted = true;
+
+            if (this.position.name.trim()) {
+                if (this.position.id) {
+                    // this.position.inventoryStatus = this.position
+                    //     .inventoryStatus.value
+                    //     ? this.position.inventoryStatus.value
+                    //     : this.position.inventoryStatus;
+                    this.positions[this.findIndexById(this.position.id)] =
+                        this.position;
+                    console.log(" this.position :>> ", this.position);
+                    Inertia.put(
+                        route("position.update", {
+                            position: this.position.id,
+                        }),
+                        this.position
+                    );
+                    this.$toast.add({
+                        severity: "success",
+                        summary: "Successful",
+                        detail: "Position Updated",
+                        life: 3000,
+                    });
+                } else {
+                    this.position.rownum = this.positions.length + 1;
+                    this.position.name = this.position.name;
+                    this.position.gaji = this.position.gaji;
+                    this.position.created_at = this.currentDate();
+                    this.positions.push(this.position);
+                    Inertia.post(route("position.store"), this.position);
+                    this.$toast.add({
+                        severity: "success",
+                        summary: "Successful",
+                        detail:
+                            "Jabatan " + this.position.name + " Ditambahkan",
+                        life: 3000,
+                    });
+                }
+
+                this.positionDialog = false;
+                this.position = {};
+            }
+        },
+        hideDialog() {
+            this.positionDialog = false;
+            this.submitted = false;
+        },
         openNew() {
-            Inertia.get(route("user.create"));
+            this.position = {};
+            this.submitted = false;
+            this.positionDialog = true;
         },
-        editUser(data) {
-            Inertia.get(route("user.edit", { user: data.id }));
+        editPosition(position) {
+            this.position = { ...position };
+            this.positionDialog = true;
         },
-        confirmDeleteUser(user) {
-            this.user = user;
-            this.deleteUserDialog = true;
+        confirmDeletePosition(position) {
+            this.position = position;
+            this.deletePositionDialog = true;
         },
-        deleteUser() {
-            Inertia.delete(route("user.destroy", { user: this.user.id }));
-            this.users = this.users.filter((val) => val.id !== this.user.id);
-            this.deleteUserDialog = false;
-            this.user = {};
+        deletePosition() {
+            Inertia.delete(
+                route("position.destroy", { position: this.position.id })
+            );
+            this.positions = this.positions.filter(
+                (val) => val.id !== this.position.id
+            );
+            this.deletePositionDialog = false;
+            this.position = {};
             this.$toast.add({
                 severity: "success",
                 summary: "Successful",
-                detail: "Users Deleted",
+                detail: "Position Deleted",
                 life: 3000,
             });
         },
         confirmDeleteSelected() {
-            this.deleteUsersDialog = true;
+            this.deletePositionsDialog = true;
         },
-        deleteSelectedUsers() {
+        deleteSelectedPositions() {
             let lists = [];
-            $.each(this.selectedUsers, function (key, value) {
+            $.each(this.selectedPositions, function (key, value) {
                 lists.push(value.id);
             });
-            Inertia.delete(route("user.deleteAll", { id: lists }));
+            Inertia.delete(route("position.deleteAll", { id: lists }));
 
-            this.users = this.users.filter(
-                (val) => !this.selectedUsers.includes(val)
+            this.positions = this.positions.filter(
+                (val) => !this.selectedPositions.includes(val)
             );
-            this.deleteUsersDialog = false;
-            this.selectedUsers = null;
+            this.deletePositionsDialog = false;
+            this.selectedPositions = null;
             this.$toast.add({
                 severity: "success",
                 summary: "Successful",
-                detail: "Users Deleted",
+                detail: "Positions Deleted",
                 life: 3000,
             });
         },
