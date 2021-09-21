@@ -74,7 +74,7 @@
                             currentPageReportTemplate="Showing {first} to {last} of {totalRecords}"
                             sortField="rownum"
                             :sortOrder="-1"
-                            :globalFilterFields="['name', 'email']"
+                            :globalFilterFields="['name']"
                             dataKey="id"
                             v-model:filters="filters"
                             filterDisplay="menu"
@@ -355,13 +355,8 @@ export default {
 
             if (this.position.name.trim()) {
                 if (this.position.id) {
-                    // this.position.inventoryStatus = this.position
-                    //     .inventoryStatus.value
-                    //     ? this.position.inventoryStatus.value
-                    //     : this.position.inventoryStatus;
                     this.positions[this.findIndexById(this.position.id)] =
                         this.position;
-                    console.log(" this.position :>> ", this.position);
                     Inertia.put(
                         route("position.update", {
                             position: this.position.id,

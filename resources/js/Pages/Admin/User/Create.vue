@@ -98,12 +98,6 @@ export default {
                 preserveState: true,
                 replace: true,
             });
-            this.$toast.add({
-                severity: "success",
-                summary: "Successful",
-                detail: "Users Deleted",
-                life: 3000,
-            });
         },
     },
 };

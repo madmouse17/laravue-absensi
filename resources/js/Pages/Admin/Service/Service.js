@@ -7,4 +7,7 @@ export default class UserService {
     getPosition() {
         return axios.get("/admin/position/json").then((res) => res.data.data);
     }
+    getEmploye() {
+        return axios.get("/admin/employe/json").then((res) => res.data.data);
+    }
 }

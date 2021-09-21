@@ -4,6 +4,7 @@ use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\EmployeController;
 use App\Http\Controllers\PositionController;
 
 /*
@@ -32,13 +33,16 @@ Route::group(['prefix' => 'admin',  'middleware' => 'auth'], function () {
     //RETURN JSON
     Route::get('/user/json', [UserController::class, 'json']);
     Route::get('/position/json', [PositionController::class, 'json']);
+    Route::get('/employe/json', [EmployeController::class, 'json']);
 
     //Delete All
     Route::delete('user/destroy-all/{id}', [UserController::class, 'deleteAll'])->name('user.deleteAll');
     Route::delete('position/destroy-all/{id}', [PositionController::class, 'deleteAll'])->name('position.deleteAll');
+    Route::delete('employe/destroy-all/{id}', [EmployeController::class, 'deleteAll'])->name('employe.deleteAll');
 
     Route::resource('/user', UserController::class);
     Route::resource('/position', PositionController::class);
+    Route::resource('/employe', EmployeController::class);
 });
 
 

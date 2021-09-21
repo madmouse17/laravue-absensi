@@ -2,8 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
+use App\Models\User;
+use Inertia\Inertia;
 use App\Models\Employe;
+use App\Models\Position;
 use Illuminate\Http\Request;
+use Yajra\DataTables\DataTables;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Date;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Redirect;
 
 class EmployeController extends Controller
 {
@@ -14,7 +23,34 @@ class EmployeController extends Controller
      */
     public function index()
     {
-        //
+        return Inertia::render('Admin/Employe/Index');
+    }
+
+    /**
+     * Datatables
+     * return Datatables
+     * @return \Illuminate\Http\Request $request
+     */
+    public function json()
+    {
+
+        DB::statement(DB::raw('set @rownum=0'));
+        $employes = Employe::with('user')->with('position')->select([
+            DB::raw('@rownum  := @rownum  + 1 AS rownum'),
+            'employes.*'
+        ]);
+
+        return Datatables::of($employes)
+            ->editColumn('created_at', function ($employes) {
+                if ($employes->created_at != null) {
+                    return $employes->created_at->format('d-M-Y');
+                }
+            })
+            ->addColumn('url', function ($employes) {
+                $url = asset('storage/pegawai/' . $employes->image);
+                return $url;
+            })
+            ->make(true);
     }
 
     /**
@@ -24,7 +60,14 @@ class EmployeController extends Controller
      */
     public function create()
     {
-        //
+        $employe = Employe::get();
+        $user_id = [];
+        foreach ($employe as $value) {
+            array_push($user_id, $value->user_id);
+        }
+        $user = User::whereNotIn('id', $user_id)->get();
+        $position = Position::get();
+        return Inertia::render('Admin/Employe/Create', ['user' => $user, 'position' => $position]);
     }
 
     /**
@@ -35,8 +78,30 @@ class EmployeController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        if ($request->all()) {
+            $request->validate([
+                'name' => 'required',
+                'position_id' => 'required',
+                'user_id' => 'required',
+                'gender' => 'required',
+                'birthdate' => 'required',
+                'image' => 'required|mimes:jpg,jpeg,png,webp,svg|max:2000'
+            ]);
+            $profile_name = $request->file('image');
+            $nama_file = time() . "_" . $profile_name->getClientOriginalName();
+            Storage::putFileAs('public/pegawai/', $profile_name, $nama_file);
+            Employe::create([
+                'name' => $request->name,
+                'position_id' => $request->position_id['id'],
+                'user_id' => $request->user_id['id'],
+                'gender' => $request->gender,
+                'birthdate' => Carbon::parse($request->birthdate)->format('y-m-d'),
+                'image' => $nama_file,
+            ]);
+            return Redirect::route('employe.index')->with('message', 'Pegawai ' . $request->name . ' Berhasil Dibuat');
+        }
     }
+
 
     /**
      * Display the specified resource.
@@ -57,7 +122,12 @@ class EmployeController extends Controller
      */
     public function edit(Employe $employe)
     {
-        //
+        $user = User::get();
+        $position = Position::get();
+        $selected_user = $employe->user()->first();
+        $selected_position = $employe->position()->first();
+        $url_image = asset('storage/pegawai/' . $employe->image);
+        return Inertia::render('Admin/Employe/Edit', ['employe' => $employe, 'user' => $user, 'position' => $position, 'selected_user' => $selected_user, 'selected_position' => $selected_position, 'url_image' => $url_image]);
     }
 
     /**
@@ -69,7 +139,47 @@ class EmployeController extends Controller
      */
     public function update(Request $request, Employe $employe)
     {
-        //
+        if ($request->file('image') != '') {
+            $oldFilename = $employe->image;
+            Storage::delete('public/pegawai/' . $oldFilename);
+            $request->validate([
+                'name' => 'required',
+                'position_id' => 'required',
+                'user_id' => 'required',
+                'gender' => 'required',
+                'birthdate' => 'required',
+                'image' => 'required|mimes:jpg,jpeg,png,webp,svg|max:2000'
+            ]);
+            $profile_name = $request->file('image');
+            $nama_file = time() . "_" . $profile_name->getClientOriginalName();
+            Storage::putFileAs('public/pegawai/', $profile_name, $nama_file);
+            $employe->update([
+                'name' => $request->name,
+                'position_id' => $request->position_id['id'],
+                'user_id' => $request->user_id['id'],
+                'gender' => $request->gender,
+                'birthdate' => Carbon::parse($request->birthdate)->format('y-m-d'),
+                'image' => $nama_file,
+            ]);
+            return Redirect::route('employe.index')->with('message', 'Pegawai ' . $request->name . ' Berhasil DiUbah');
+        } else {
+            $request->validate([
+                'name' => 'required',
+                'position_id' => 'required',
+                'user_id' => 'required',
+                'gender' => 'required',
+                'birthdate' => 'required',
+            ]);
+
+            $employe->update([
+                'name' => $request->name,
+                'position_id' => $request->position_id['id'],
+                'user_id' => $request->user_id['id'],
+                'gender' => $request->gender,
+                'birthdate' => Carbon::parse($request->birthdate)->format('y-m-d'),
+            ]);
+            return Redirect::route('employe.index')->with('message', 'Pegawai ' . $request->name . ' Berhasil DiUbah');
+        }
     }
 
     /**
@@ -80,6 +190,19 @@ class EmployeController extends Controller
      */
     public function destroy(Employe $employe)
     {
-        //
+        Storage::delete('public/pegawai/' . $employe->image);
+        $employe->delete();
+        return Redirect::route('employe.index');
+    }
+    public function deleteAll($id)
+    {
+        $ids = explode(",", $id);
+        $image = Employe::whereIn('id', $ids)->get();
+        foreach ($image as $key => $value) {
+            Storage::delete('public/pegawai/' . $value->image);
+        };
+
+        Employe::whereIn('id', $ids)->delete();
+        return Redirect::route('employe.index');
     }
 }

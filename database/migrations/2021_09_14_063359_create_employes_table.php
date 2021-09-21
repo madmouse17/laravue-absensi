@@ -15,6 +15,16 @@ class CreateEmployesTable extends Migration
     {
         Schema::create('employes', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('position_id')->constrained()
+                ->onUpdate('cascade')
+                ->onDelete('cascade');;
+            $table->foreignId('user_id')->constrained()
+                ->onUpdate('cascade')
+                ->onDelete('cascade');;
+            $table->string('name');
+            $table->date('birthdate');
+            $table->enum('gender', ['laki-laki', 'perempuan']);
+            $table->string('image');
             $table->timestamps();
         });
     }

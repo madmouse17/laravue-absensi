@@ -154,7 +154,6 @@ class UserController extends Controller
     }
     public function deleteAll($id)
     {
-        // dd($user);
         $ids = explode(",", $id);
         User::whereIn('id', $ids)->delete();
         return Redirect::route('user.index');
