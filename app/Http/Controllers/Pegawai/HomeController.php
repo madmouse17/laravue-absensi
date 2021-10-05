@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Pegawai;
 
 use App\Http\Controllers\Controller;
 use App\Models\Employe;
+use App\Models\Location;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
@@ -23,6 +24,7 @@ class HomeController extends Controller
             array_push($image, $value->image);
         }
 
+
         return Inertia::render('Pegawai/Index', ['image' => $image]);
     }
 
@@ -36,7 +38,8 @@ class HomeController extends Controller
         if ($request->image != '') {
             $presen = Employe::with('position')->where('image', $request->image)->first();
             $url =  asset('/storage/pegawai/' . $presen->image);
-            return Inertia::render('Pegawai/Create', ['presen' => $presen, 'url' => $url]);
+            $locate = Location::where('id', 1)->first();
+            return Inertia::render('Pegawai/Create', ['presen' => $presen, 'url' => $url, 'locate' => $locate]);
         }
     }
 

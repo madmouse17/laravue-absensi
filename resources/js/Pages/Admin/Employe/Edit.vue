@@ -168,7 +168,6 @@ export default {
         },
         onUpload(event) {
             this.form.image = event.files[0];
-            console.log("event :>> ", event.files[0]);
         },
     },
 };

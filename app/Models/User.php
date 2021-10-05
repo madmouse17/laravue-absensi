@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Employe;
+use App\Models\Attendance;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -45,5 +46,10 @@ class User extends Authenticatable
     public function employe()
     {
         return $this->hasOne(Employe::class);
+    }
+
+    public function attedance()
+    {
+        $this->belongsTo(Attendance::class);
     }
 }

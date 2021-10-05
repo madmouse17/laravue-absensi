@@ -85,6 +85,7 @@ export default {
                         });
                         drawBox.draw(this.canvas);
                         if (result._label != "unknown") {
+                            this.video.pause();
                             this.form.image = result._label;
                             this.form.get(
                                 this.route("presensi.create"),

@@ -17,10 +17,10 @@ class CreateEmployesTable extends Migration
             $table->id();
             $table->foreignId('position_id')->constrained()
                 ->onUpdate('cascade')
-                ->onDelete('cascade');;
+                ->onDelete('cascade');
             $table->foreignId('user_id')->constrained()
                 ->onUpdate('cascade')
-                ->onDelete('cascade');;
+                ->onDelete('cascade');
             $table->string('name');
             $table->date('birthdate');
             $table->enum('gender', ['laki-laki', 'perempuan']);

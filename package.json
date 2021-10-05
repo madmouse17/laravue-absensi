@@ -30,6 +30,7 @@
         "@popperjs/core": "2.4.4",
         "chart.js": "^2.9.4",
         "face-api.js": "^0.22.2",
+        "haversine-geolocation": "^1.5.0",
         "primeicons": "^4.1.0",
         "primevue": "^3.7.0",
         "sass": "^1.39.0",

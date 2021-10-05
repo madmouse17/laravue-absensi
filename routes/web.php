@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\EmployeController;
+use App\Http\Controllers\LocationController;
 use App\Http\Controllers\PositionController;
 use App\Http\Controllers\Pegawai\HomeController;
 
@@ -45,6 +46,7 @@ Route::group(['prefix' => 'admin',  'middleware' => 'auth'], function () {
     Route::resource('/position', PositionController::class);
     Route::resource('/employe', EmployeController::class);
     Route::resource('/presensi', HomeController::class);
+    Route::resource('/location', LocationController::class);
 });
 
 
