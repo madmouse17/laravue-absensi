@@ -2,18 +2,18 @@
 
 namespace App\Models;
 
-use App\Models\User;
+use App\Models\Employe;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Attendance extends Model
 {
     use HasFactory;
-    protected $fillable = ['user_id', 'in', 'permission', 'out', 'desc'];
+    protected $fillable = ['employe_id', 'in', 'permission', 'out', 'desc', 'attended_at'];
 
 
-    public function user()
+    public function employe()
     {
-        $this->hasMany(User::class);
+        return $this->hasMany(Employe::class);
     }
 }

@@ -33,6 +33,13 @@
                                     class="mb-4"
                                     :validate="errors.name"
                             /></Label>
+                            <Label title="NIP"
+                                ><Input
+                                    placeholder="Masukkan NIP"
+                                    type="text"
+                                    v-model="form.nip" />
+                                <Validation class="mb-4" :validate="errors.nip"
+                            /></Label>
                             <Label title="Tanggal Lahir">
                                 <Calendar
                                     id="icon"
@@ -46,11 +53,31 @@
                                     class="mb-4"
                                     :validate="errors.birthdate"
                             /></Label>
-                            <Label title="NIP"
+                            <Label title="Jenis Kelamin">
+                                <RadioButton
+                                    id="gender1"
+                                    name="gender"
+                                    value="laki-laki"
+                                    v-model="form.gender" />
+                                <label for="gender1">Laki-laki</label>
+                                <div class="p-field-radiobutton">
+                                    <RadioButton
+                                        id="gender2"
+                                        name="gender"
+                                        value="perempuan"
+                                        v-model="form.gender"
+                                    />
+                                    <label for="gender2">Perempuan</label>
+                                    <Validation
+                                        class="mb-4"
+                                        :validate="errors.gender"
+                                    /></div
+                            ></Label>
+                            <Label title="Email"
                                 ><Listbox
                                     v-model="form.user_id"
                                     :options="user"
-                                    optionLabel="name"
+                                    optionLabel="email"
                                     :filter="true"
                                     filterPlaceholder="Cari"
                                     listStyle="max-height:100px"
@@ -74,27 +101,6 @@
                                     :validate="errors.position_id"
                                 />
                             </Label>
-
-                            <Label title="Jenis Kelamin">
-                                <RadioButton
-                                    id="gender1"
-                                    name="gender"
-                                    value="laki-laki"
-                                    v-model="form.gender" />
-                                <label for="gender1">Laki-laki</label>
-                                <div class="p-field-radiobutton">
-                                    <RadioButton
-                                        id="gender2"
-                                        name="gender"
-                                        value="perempuan"
-                                        v-model="form.gender"
-                                    />
-                                    <label for="gender2">Perempuan</label>
-                                    <Validation
-                                        class="mb-4"
-                                        :validate="errors.gender"
-                                    /></div
-                            ></Label>
                         </div>
                         <Button title="update" />
                     </form>
@@ -153,6 +159,7 @@ export default {
                 user_id: this.selected_user,
                 position_id: this.selected_position,
                 gender: this.employe.gender,
+                nip: this.employe.nip,
             }),
         };
     },

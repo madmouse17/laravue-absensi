@@ -1,5 +1,6 @@
 <template>
     <Head title="Tambah-Pegawai" />
+    <Toast />
     <admin-layouts>
         <div class="flex flex-wrap">
             <div class="w-full px-4">
@@ -32,6 +33,33 @@
                                     class="mb-4"
                                     :validate="errors.name"
                             /></Label>
+                            <Label title="NIP"
+                                ><Input
+                                    placeholder="Masukkan NIP"
+                                    type="text"
+                                    v-model="form.nip" />
+                                <Validation class="mb-4" :validate="errors.nip"
+                            /></Label>
+                            <Label title="Jenis Kelamin">
+                                <RadioButton
+                                    id="gender1"
+                                    name="gender"
+                                    value="laki-laki"
+                                    v-model="form.gender" />
+                                <label for="gender1">Laki-laki</label>
+                                <div class="p-field-radiobutton">
+                                    <RadioButton
+                                        id="gender2"
+                                        name="gender"
+                                        value="perempuan"
+                                        v-model="form.gender"
+                                    />
+                                    <label for="gender2">Perempuan</label>
+                                    <Validation
+                                        class="mb-4"
+                                        :validate="errors.gender"
+                                    /></div
+                            ></Label>
                             <Label title="Tanggal Lahir">
                                 <Calendar
                                     id="icon"
@@ -45,11 +73,11 @@
                                     class="mb-4"
                                     :validate="errors.birthdate"
                             /></Label>
-                            <Label title="NIP"
+                            <Label title="Email"
                                 ><Listbox
                                     v-model="form.user_id"
                                     :options="user"
-                                    optionLabel="name"
+                                    optionLabel="email"
                                     :filter="true"
                                     filterPlaceholder="Cari"
                                     listStyle="max-height:100px"
@@ -73,27 +101,6 @@
                                     :validate="errors.position_id"
                                 />
                             </Label>
-
-                            <Label title="Jenis Kelamin">
-                                <RadioButton
-                                    id="gender1"
-                                    name="gender"
-                                    value="laki-laki"
-                                    v-model="form.gender" />
-                                <label for="gender1">Laki-laki</label>
-                                <div class="p-field-radiobutton">
-                                    <RadioButton
-                                        id="gender2"
-                                        name="gender"
-                                        value="perempuan"
-                                        v-model="form.gender"
-                                    />
-                                    <label for="gender2">Perempuan</label>
-                                    <Validation
-                                        class="mb-4"
-                                        :validate="errors.gender"
-                                    /></div
-                            ></Label>
                         </div>
                         <Button title="simpan" />
                     </form>
@@ -116,6 +123,7 @@ import AdminLayouts from "@/Layouts/Admin.vue";
 import { Link } from "@inertiajs/inertia-vue3";
 import { Head } from "@inertiajs/inertia-vue3";
 import { Inertia } from "@inertiajs/inertia";
+import Toast from "primevue/toast";
 export default {
     props: ["errors", "user", "position", "employe"],
     components: {
@@ -131,6 +139,7 @@ export default {
         RadioButton,
         Calendar,
         Listbox,
+        Toast,
     },
     data() {
         return {
@@ -141,6 +150,7 @@ export default {
                 user_id: null,
                 position_id: null,
                 gender: null,
+                nip: null,
             }),
         };
     },
@@ -153,6 +163,12 @@ export default {
         },
         onUpload(event) {
             this.form.image = event.files[0];
+            this.$toast.add({
+                severity: "info",
+                summary: "Success",
+                detail: "File Uploaded",
+                life: 3000,
+            });
         },
     },
 };

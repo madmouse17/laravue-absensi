@@ -22,25 +22,46 @@
                 </table>
             </template>
             <template #footer>
-                <form action="">
-                    <template v-if="distance.d <= locate.distance">
-                        <Button icon="pi pi-arrow-right" label="Masuk" />
+                <div v-if="attend == null">
+                    <template v-if="distance.d <= locate.radius">
+                        <form @submit.prevent="submitIn">
+                            <Button
+                                icon="pi pi-arrow-right"
+                                label="Masuk"
+                                type="submit"
+                            />
+                        </form>
                     </template>
-                </form>
-
-                <Button
-                    icon="pi pi-calendar-plus"
-                    label="Ijin"
-                    class="p-button-warning"
-                    style="margin-left: 0.5em"
-                />
-                <template v-if="distance.d <= locate.distance">
-                    <Button
-                        icon="pi pi-arrow-left"
-                        class="p-button-secondary"
-                        label="Pulang"
-                        style="margin-left: 0.5em"
-                    />
+                    <form @submit.prevent="submitPermission">
+                        <Button
+                            icon="pi pi-calendar-plus"
+                            label="Ijin"
+                            class="p-button-warning"
+                            style="margin-top: 0.5em"
+                            type="submit"
+                        />
+                    </form>
+                </div>
+                <template v-if="distance.d <= locate.radius && attend">
+                    <div v-if="attend.in && attend.out">
+                        <h1 style="font-weght: bold">
+                            Sudah Melakukan Absensi Hari ini
+                        </h1>
+                    </div>
+                    <div v-else-if="attend.permission">
+                        <h1 style="font-weght: bold">Anda Ijin hari ini</h1>
+                    </div>
+                    <div v-else>
+                        <form @submit.prevent="submitOut">
+                            <Button
+                                icon="pi pi-arrow-left"
+                                class="p-button-secondary"
+                                label="Pulang"
+                                style="margin-left: 0.5em"
+                                type="submit"
+                            />
+                        </form>
+                    </div>
                 </template>
             </template>
         </Card>
@@ -51,8 +72,9 @@ import Menubar from "@/Layouts/Guest/Menubar";
 import Card from "primevue/card";
 import Avatar from "primevue/avatar";
 import Button from "primevue/button";
+import { Inertia } from "@inertiajs/inertia";
 export default {
-    props: { presen: Object, url: Object, locate: Object },
+    props: { presen: Object, url: Object, locate: Object, attend: Object },
     components: {
         Menubar,
         Card,
@@ -63,7 +85,7 @@ export default {
         return {
             coords: {},
             distance: {},
-            in: "masuk",
+            in: { employe_id: this.presen.id },
         };
     },
     mounted() {
@@ -100,6 +122,21 @@ export default {
             } else {
                 x.innerHTML = "Geolocation is not supported by this browser.";
             }
+        },
+        submitIn() {
+            Inertia.post(route("attendance.store"), this.in, {
+                preserveState: true,
+                replace: true,
+            });
+        },
+        submitOut() {
+            Inertia.post(route("attendance.out"), this.in, {
+                preserveState: true,
+                replace: true,
+            });
+        },
+        submitPermission() {
+            Inertia.get(route("presensi.permission"), this.presen.id);
         },
     },
 };

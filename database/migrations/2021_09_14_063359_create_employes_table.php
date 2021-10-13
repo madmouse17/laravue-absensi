@@ -18,7 +18,7 @@ class CreateEmployesTable extends Migration
             $table->foreignId('position_id')->constrained()
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
-            $table->foreignId('user_id')->constrained()
+            $table->foreignId('user_id')->nullable()->constrained()
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
             $table->string('name');

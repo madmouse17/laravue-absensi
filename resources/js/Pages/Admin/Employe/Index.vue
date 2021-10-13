@@ -127,7 +127,7 @@
                                 </template>
                             </Column>
                             <Column
-                                field="user.name"
+                                field="nip"
                                 header="NIP"
                                 :sortable="true"
                             ></Column>
@@ -296,6 +296,7 @@ export default {
         this.columns = [
             { field: "birthdate", header: "Tanggal Lahir" },
             { field: "gender", header: "Jenis Kelamin" },
+            { field: "user.email", header: "Email" },
         ];
     },
     mounted() {

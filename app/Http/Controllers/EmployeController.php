@@ -62,7 +62,10 @@ class EmployeController extends Controller
     {
         $employe = Employe::get();
         $user_id = [];
-        foreach ($employe as $value) {
+        $filter = $employe->filter(function ($value, $key) {
+            return $value->user_id != null;
+        });
+        foreach ($filter as $value) {
             array_push($user_id, $value->user_id);
         }
         $user = User::whereNotIn('id', $user_id)->get();
@@ -82,22 +85,34 @@ class EmployeController extends Controller
             $request->validate([
                 'name' => 'required',
                 'position_id' => 'required',
-                'user_id' => 'required',
                 'gender' => 'required',
                 'birthdate' => 'required',
-                'image' => 'required|mimes:jpg,jpeg,png,webp,svg|max:2000'
+                'image' => 'required|mimes:jpg,jpeg,png,webp,svg|max:2000',
+                'nip' => 'required'
             ]);
             $profile_name = $request->file('image');
             $nama_file = time() . "_" . $profile_name->getClientOriginalName();
             Storage::putFileAs('public/pegawai/', $profile_name, $nama_file);
-            Employe::create([
-                'name' => $request->name,
-                'position_id' => $request->position_id['id'],
-                'user_id' => $request->user_id['id'],
-                'gender' => $request->gender,
-                'birthdate' => Carbon::parse($request->birthdate)->format('y-m-d'),
-                'image' => $nama_file,
-            ]);
+            if ($request->user_id) {
+                Employe::create([
+                    'name' => $request->name,
+                    'position_id' => $request->position_id['id'],
+                    'user_id' => $request->user_id['id'],
+                    'gender' => $request->gender,
+                    'birthdate' => Carbon::parse($request->birthdate)->format('y-m-d'),
+                    'image' => $nama_file,
+                    'nip' => $request->nip
+                ]);
+            } else {
+                Employe::create([
+                    'name' => $request->name,
+                    'position_id' => $request->position_id['id'],
+                    'gender' => $request->gender,
+                    'birthdate' => Carbon::parse($request->birthdate)->format('y-m-d'),
+                    'image' => $nama_file,
+                    'nip' => $request->nip
+                ]);
+            }
             return Redirect::route('employe.index')->with('message', 'Pegawai ' . $request->name . ' Berhasil Dibuat');
         }
     }
@@ -145,39 +160,64 @@ class EmployeController extends Controller
             $request->validate([
                 'name' => 'required',
                 'position_id' => 'required',
-                'user_id' => 'required',
                 'gender' => 'required',
                 'birthdate' => 'required',
-                'image' => 'required|mimes:jpg,jpeg,png,webp,svg|max:2000'
+                'image' => 'required|mimes:jpg,jpeg,png,webp,svg|max:2000',
+                'nip' => 'required'
             ]);
             $profile_name = $request->file('image');
             $nama_file = time() . "_" . $profile_name->getClientOriginalName();
             Storage::putFileAs('public/pegawai/', $profile_name, $nama_file);
-            $employe->update([
-                'name' => $request->name,
-                'position_id' => $request->position_id['id'],
-                'user_id' => $request->user_id['id'],
-                'gender' => $request->gender,
-                'birthdate' => Carbon::parse($request->birthdate)->format('y-m-d'),
-                'image' => $nama_file,
-            ]);
+            if ($request->user_id) {
+                $employe->update([
+                    'name' => $request->name,
+                    'position_id' => $request->position_id['id'],
+                    'user_id' => $request->user_id['id'],
+                    'gender' => $request->gender,
+                    'birthdate' => Carbon::parse($request->birthdate)->format('y-m-d'),
+                    'image' => $nama_file,
+                    'nip' => $request->nip
+                ]);
+            } else {
+                $employe->update([
+                    'name' => $request->name,
+                    'position_id' => $request->position_id['id'],
+                    'gender' => $request->gender,
+                    'birthdate' => Carbon::parse($request->birthdate)->format('y-m-d'),
+                    'image' => $nama_file,
+                    'nip' => $request->nip
+                ]);
+            }
+
             return Redirect::route('employe.index')->with('message', 'Pegawai ' . $request->name . ' Berhasil DiUbah');
         } else {
             $request->validate([
                 'name' => 'required',
                 'position_id' => 'required',
-                'user_id' => 'required',
                 'gender' => 'required',
                 'birthdate' => 'required',
+                'nip' => 'required'
             ]);
+            if ($request->user_id) {
+                $employe->update([
+                    'name' => $request->name,
+                    'position_id' => $request->position_id['id'],
+                    'user_id' => $request->user_id['id'],
+                    'gender' => $request->gender,
+                    'birthdate' => Carbon::parse($request->birthdate)->format('y-m-d'),
+                    'nip' => $request->nip
+                ]);
+            } else {
+                $employe->update([
+                    'name' => $request->name,
+                    'position_id' => $request->position_id['id'],
+                    'gender' => $request->gender,
+                    'birthdate' => Carbon::parse($request->birthdate)->format('y-m-d'),
+                    'nip' => $request->nip
+                ]);
+            }
 
-            $employe->update([
-                'name' => $request->name,
-                'position_id' => $request->position_id['id'],
-                'user_id' => $request->user_id['id'],
-                'gender' => $request->gender,
-                'birthdate' => Carbon::parse($request->birthdate)->format('y-m-d'),
-            ]);
+
             return Redirect::route('employe.index')->with('message', 'Pegawai ' . $request->name . ' Berhasil DiUbah');
         }
     }

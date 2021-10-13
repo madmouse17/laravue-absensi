@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers\Pegawai;
 
-use App\Http\Controllers\Controller;
+use Carbon\Carbon;
+use Inertia\Inertia;
 use App\Models\Employe;
 use App\Models\Location;
+use App\Models\Attendance;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
-use Inertia\Inertia;
 
 class HomeController extends Controller
 {
@@ -39,8 +42,18 @@ class HomeController extends Controller
             $presen = Employe::with('position')->where('image', $request->image)->first();
             $url =  asset('/storage/pegawai/' . $presen->image);
             $locate = Location::where('id', 1)->first();
-            return Inertia::render('Pegawai/Create', ['presen' => $presen, 'url' => $url, 'locate' => $locate]);
+            $now = Carbon::now()->format('Y-m-d');
+            $attend = Attendance::where('attended_at', $now)->where('employe_id', $presen->id)->first();
+            return Inertia::render('Pegawai/Create', ['presen' => $presen, 'url' => $url, 'locate' => $locate, 'attend' => $attend]);
         }
+    }
+
+    public function permission(Request $request)
+    {
+        $presen = Employe::where($request->presen_id)->first();
+        return Inertia::render('Pegawai/Permission', [
+            'presen' => $presen
+        ]);
     }
 
     /**

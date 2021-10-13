@@ -7,6 +7,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\EmployeController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\PositionController;
+use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\Pegawai\HomeController;
 
 /*
@@ -32,6 +33,12 @@ Route::group(['prefix' => 'admin',  'middleware' => 'auth'], function () {
     Route::get('/dashboard', function () {
         return Inertia::render('Admin/Dashboard');
     })->name('dashboard');
+
+    Route::post('/attendance/out', [AttendanceController::class, 'out'])->name('attendance.out');
+    Route::post('/attendance/permission', [AttendanceController::class, 'permission'])->name('attendance.permission');
+
+    Route::get('/presensi/permission/', ['as' => 'permission', HomeController::class, 'permission'])->name('presensi.permission');
+
     //RETURN JSON
     Route::get('/user/json', [UserController::class, 'json']);
     Route::get('/position/json', [PositionController::class, 'json']);
@@ -42,11 +49,13 @@ Route::group(['prefix' => 'admin',  'middleware' => 'auth'], function () {
     Route::delete('position/destroy-all/{id}', [PositionController::class, 'deleteAll'])->name('position.deleteAll');
     Route::delete('employe/destroy-all/{id}', [EmployeController::class, 'deleteAll'])->name('employe.deleteAll');
 
+
     Route::resource('/user', UserController::class);
     Route::resource('/position', PositionController::class);
     Route::resource('/employe', EmployeController::class);
     Route::resource('/presensi', HomeController::class);
     Route::resource('/location', LocationController::class);
+    Route::resource('/attendance', AttendanceController::class);
 });
 
 
