@@ -18,6 +18,7 @@
                         placeholder="silahkan pilih tanggal ijin"
                         :showButtonBar="true"
                         style="margin-bottom: 3em"
+                        :disabledDates="invalidDates"
                         required
                     />
                     <h5>Upload Bukti Ijin</h5>

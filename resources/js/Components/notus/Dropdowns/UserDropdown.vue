@@ -101,8 +101,8 @@
                 Something else here
             </a>
             <div class="h-0 my-2 border border-solid border-blueGray-100" />
-            <a
-                href="javascript:void(0);"
+            <Link
+                :href="route('logout')"
                 class="
                     text-sm
                     py-2
@@ -114,9 +114,11 @@
                     bg-transparent
                     text-blueGray-700
                 "
+                method="post"
+                as="button"
             >
-                Seprated link
-            </a>
+                Keluar
+            </Link>
         </div>
     </div>
 </template>
@@ -125,8 +127,12 @@
 import { createPopper } from "@popperjs/core";
 
 import image from "@/img/team-1-800x800.jpg";
+import { Link } from "@inertiajs/inertia-vue3";
 
 export default {
+    components: {
+        Link,
+    },
     data() {
         return {
             dropdownPopoverShow: false,

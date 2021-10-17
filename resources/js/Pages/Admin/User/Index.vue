@@ -111,6 +111,25 @@
                                 :sortable="true"
                             ></Column>
                             <Column
+                                field="roles"
+                                header="Roles"
+                                :sortable="true"
+                            >
+                                <template #body="slotProps">
+                                    <Badge
+                                        :value="slotProps.data.roles"
+                                        :severity="
+                                            slotProps.data.roles ==
+                                            '[&quot;Manager&quot;]'
+                                                ? 'succes'
+                                                : slotProps.data.roles ==
+                                                  '[&quot;admin&quot;]'
+                                                ? 'warning'
+                                                : 'info'
+                                        "
+                                    ></Badge> </template
+                            ></Column>
+                            <Column
                                 field="created_at"
                                 header="Tanggal Buat"
                                 :sortable="true"
@@ -221,6 +240,7 @@ import InputText from "primevue/inputtext";
 import Toolbar from "primevue/toolbar";
 import Dialog from "primevue/dialog";
 import Toast from "primevue/toast";
+import Badge from "primevue/badge";
 export default {
     props: ["flash"],
     components: {
@@ -234,6 +254,7 @@ export default {
         Toolbar,
         Dialog,
         Toast,
+        Badge,
     },
     data() {
         return {

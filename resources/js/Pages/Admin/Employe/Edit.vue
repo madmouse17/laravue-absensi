@@ -103,6 +103,7 @@
                             </Label>
                         </div>
                         <Button title="update" />
+                        {{ selected_user }}
                     </form>
                 </CardUser>
             </div>

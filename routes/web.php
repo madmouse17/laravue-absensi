@@ -9,6 +9,7 @@ use App\Http\Controllers\LocationController;
 use App\Http\Controllers\PositionController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\Pegawai\HomeController;
+use Illuminate\Support\Facades\Redirect;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,23 +22,22 @@ use App\Http\Controllers\Pegawai\HomeController;
 |
 */
 
+// Route::get('/', function () {
+//     return Inertia::render('Welcome', [
+//         'canLogin' => Route::has('login'),
+//         'canRegister' => Route::has('register'),
+//         'laravelVersion' => Application::VERSION,
+//         'phpVersion' => PHP_VERSION,
+//     ]);
+// });
 Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
+    return Redirect::route('login');
 });
-Route::group(['prefix' => 'admin',  'middleware' => 'auth'], function () {
+
+Route::group(['prefix' => 'admin',  'middleware' => ['auth', 'role:admin']], function () {
     Route::get('/dashboard', function () {
         return Inertia::render('Admin/Dashboard');
     })->name('dashboard');
-
-    Route::post('/attendance/out', [AttendanceController::class, 'out'])->name('attendance.out');
-    Route::post('/attendance/permission', [AttendanceController::class, 'permission'])->name('attendance.permission');
-
-    Route::get('/presensi/permission/', ['as' => 'permission', HomeController::class, 'permission'])->name('presensi.permission');
 
     //RETURN JSON
     Route::get('/user/json', [UserController::class, 'json']);
@@ -53,8 +53,15 @@ Route::group(['prefix' => 'admin',  'middleware' => 'auth'], function () {
     Route::resource('/user', UserController::class);
     Route::resource('/position', PositionController::class);
     Route::resource('/employe', EmployeController::class);
-    Route::resource('/presensi', HomeController::class);
+
     Route::resource('/location', LocationController::class);
+});
+Route::group(['prefix' => 'employe',  'middleware' => ['auth', 'role:pegawai']], function () {
+    Route::post('/attendance/out', [AttendanceController::class, 'out'])->name('attendance.out');
+    Route::post('/attendance/permission', [AttendanceController::class, 'permission'])->name('attendance.permission');
+
+    Route::get('/presensi/permission/', ['as' => 'permission', HomeController::class, 'permission'])->name('presensi.permission');
+    Route::resource('/presensi', HomeController::class);
     Route::resource('/attendance', AttendanceController::class);
 });
 

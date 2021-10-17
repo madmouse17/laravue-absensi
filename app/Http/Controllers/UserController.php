@@ -5,14 +5,15 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password;
-use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
@@ -49,6 +50,10 @@ class UserController extends Controller
                     return $users->created_at->format('d-M-Y');
                 }
             })
+            ->addColumn('roles', function ($users) {
+                return $users->getRoleNames();
+            })
+            ->rawColumns(['roles'])
             ->make(true);
     }
 
@@ -59,7 +64,8 @@ class UserController extends Controller
      */
     public function create()
     {
-        return Inertia::render("Admin/User/Create");
+        $roles = Role::get();
+        return Inertia::render("Admin/User/Create", ['roles' => $roles]);
     }
 
     /**
@@ -74,6 +80,7 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => ['required', 'confirmed', Password::defaults()],
+            'role' => 'required'
         ]);
 
         $user = User::create([
@@ -81,6 +88,8 @@ class UserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
+        $user->assignRole($request->role['name']);
+
 
         return Redirect::route('user.index')->with('message', 'User ' . $request->name . ' Berhasil Dibuat');
     }
@@ -104,8 +113,11 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
+        $roles = Role::get();
+        $collect = $user->roles->first();
+        $selected_role = collect($collect)->except('pivot');
 
-        return Inertia::render("Admin/User/Edit", ['user' => $user]);
+        return Inertia::render("Admin/User/Edit", ['user' => $user, 'roles' => $roles, 'selected_role' => $selected_role]);
     }
 
     /**
@@ -136,6 +148,8 @@ class UserController extends Controller
             ]);
             $user->update($request->all);
         }
+        DB::table('model_has_roles')->where('model_id', $user->id)->delete();
+        $user->assignRole($request->role['name']);
 
         return Redirect::route('user.index')->with('message', 'User ' . $user->name . ' Berhasil Diupdate');
     }

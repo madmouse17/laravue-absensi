@@ -49,8 +49,20 @@
                                     v-model="users.password_confirmation" />
                                 <Validation
                                     class="mb-4"
-                                    :validate="errors.passord_confirmation"
+                                    :validate="errors.password_confirmation"
                             /></Label>
+                            <Label title="Role"
+                                ><Listbox
+                                    v-model="users.role"
+                                    :options="roles"
+                                    optionLabel="name"
+                                    listStyle="max-height:200px"
+                                />
+                                <Validation
+                                    class="mb-4"
+                                    :validate="errors.role"
+                                />
+                            </Label>
                             <Button title="simpan" />
                         </div>
                     </form>
@@ -66,11 +78,17 @@ import Validation from "@/Components/notus/Validation/ValidationError.vue";
 import Label from "@/Components/notus/FormComponent/Label.vue";
 import Button from "@/Components/notus/FormComponent/Button.vue";
 import AdminLayouts from "@/Layouts/Admin.vue";
+import Listbox from "primevue/listbox";
 import { Link } from "@inertiajs/inertia-vue3";
 import { Head } from "@inertiajs/inertia-vue3";
 import { Inertia } from "@inertiajs/inertia";
 export default {
-    props: { errors: Object, user: Object },
+    props: {
+        errors: Object,
+        user: Object,
+        roles: Object,
+        selected_role: Object,
+    },
     components: {
         AdminLayouts,
         Link,
@@ -80,6 +98,7 @@ export default {
         Label,
         Validation,
         Button,
+        Listbox,
     },
     data() {
         return {
@@ -88,6 +107,7 @@ export default {
                 email: this.user.email,
                 password: null,
                 password_confirmation: null,
+                role: this.selected_role,
             }),
         };
     },

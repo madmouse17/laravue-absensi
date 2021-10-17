@@ -2,15 +2,19 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Providers\RouteServiceProvider;
-use Illuminate\Auth\Events\Registered;
+use Inertia\Inertia;
+use App\Models\Employe;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rules;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules;
-use Inertia\Inertia;
+use Illuminate\Auth\Events\Registered;
+use App\Providers\RouteServiceProvider;
+use Illuminate\Support\Facades\Redirect;
+use Spatie\Permission\Models\Role;
 
 class RegisteredUserController extends Controller
 {
@@ -19,9 +23,14 @@ class RegisteredUserController extends Controller
      *
      * @return \Illuminate\View\View
      */
-    public function create()
+    public function create(Request $request)
     {
-        return Inertia::render('Auth/Register');
+
+        $data = Employe::where('nip', $request->nip)->first();
+        if ($data->user_id) {
+            return (abort(404));
+        }
+        return Inertia::render('Auth/Register', ['data' => $data]);
     }
 
     /**
@@ -40,16 +49,36 @@ class RegisteredUserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+        DB::beginTransaction();
+        try {
 
-        event(new Registered($user));
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+            ]);
+            $user->assignRole('pegawai');
+            Employe::where('nip', $request->nip)->update([
+                'user_id' => $user->id
+            ]);
 
-        Auth::login($user);
-
-        return redirect(RouteServiceProvider::HOME);
+            DB::commit();
+            // return response()->json([
+            //     'status' => 'success',
+            //     'message' => $user->name,
+            // ], 200);
+            event(new Registered($user));
+            Auth::login($user);
+            if (auth()->user()->hasRole('pegawai')) {
+                return Redirect::route('presensi.index');
+            }
+            // return redirect(RouteServiceProvider::HOME);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'status' => 'failed',
+                'message' => $e->getMessage()
+            ], 400);
+        }
     }
 }

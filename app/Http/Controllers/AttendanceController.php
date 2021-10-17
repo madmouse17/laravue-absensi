@@ -68,7 +68,6 @@ class AttendanceController extends Controller
         $profile_name = $request->file('image');
         $nama_file = time() . "_" . $profile_name->getClientOriginalName();
         Storage::putFileAs('public/permission/', $profile_name, $nama_file);
-
         foreach ($request->attend as $value) {
             Attendance::create([
                 'employe_id' => $request->employe_id,
