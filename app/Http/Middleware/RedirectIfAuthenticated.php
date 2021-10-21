@@ -2,10 +2,13 @@
 
 namespace App\Http\Middleware;
 
-use App\Providers\RouteServiceProvider;
 use Closure;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Providers\RouteServiceProvider;
+use Illuminate\Support\Facades\Redirect;
+use Spatie\Permission\Models\Role;
 
 class RedirectIfAuthenticated
 {
@@ -23,6 +26,9 @@ class RedirectIfAuthenticated
 
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
+                if (Auth::user()->hasRole('pegawai')) {
+                    return Redirect::route('presensi.index');
+                }
                 return redirect(RouteServiceProvider::HOME);
             }
         }

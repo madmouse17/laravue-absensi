@@ -1,5 +1,5 @@
 <template>
-    <Menubar />
+    <Menu />
     <center>
         <Card
             style="width: 25rem; margin-bottom: 2em"
@@ -23,11 +23,11 @@
 </template>
 <script>
 import * as faceapi from "face-api.js";
-import Menubar from "@/Layouts/Guest/Menubar";
+import Menu from "@/Layouts/Guest/Menu";
 import Card from "primevue/card";
 export default {
     components: {
-        Menubar,
+        Menu,
         Card,
     },
     props: ["image"],

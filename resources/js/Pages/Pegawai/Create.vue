@@ -1,5 +1,5 @@
 <template>
-    <Menubar />
+    <Menu />
     <center>
         <Card
             style="width: 25rem; margin-bottom: 2em"
@@ -68,7 +68,7 @@
     </center>
 </template>
 <script>
-import Menubar from "@/Layouts/Guest/Menubar";
+import Menu from "@/Layouts/Guest/Menu";
 import Card from "primevue/card";
 import Avatar from "primevue/avatar";
 import Button from "primevue/button";
@@ -76,7 +76,7 @@ import { Inertia } from "@inertiajs/inertia";
 export default {
     props: { presen: Object, url: Object, locate: Object, attend: Object },
     components: {
-        Menubar,
+        Menu,
         Card,
         Avatar,
         Button,

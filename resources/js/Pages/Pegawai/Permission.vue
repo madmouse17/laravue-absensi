@@ -1,6 +1,6 @@
 <template>
     <Toast />
-    <Menubar />
+    <Menu />
     <center>
         <form @submit.prevent="Submit">
             <Card style="width: 50rem; margin-bottom: 2em; margin-top: 5em">
@@ -63,7 +63,7 @@
     </center>
 </template>
 <script>
-import Menubar from "@/Layouts/Guest/Menubar";
+import Menu from "@/Layouts/Guest/Menu";
 import Calendar from "primevue/calendar";
 import FileUpload from "primevue/fileupload";
 import Toast from "primevue/toast";
@@ -72,7 +72,7 @@ import Button from "primevue/button";
 import Textarea from "primevue/textarea";
 export default {
     components: {
-        Menubar,
+        Menu,
         Calendar,
         FileUpload,
         Toast,

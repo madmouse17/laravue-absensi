@@ -42,9 +42,9 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerate();
         if (User::whereEmail($request->email)->first()->hasRole('pegawai')) {
             return Redirect::route('presensi.index');
+        } else {
+            return redirect()->intended(RouteServiceProvider::HOME);
         }
-
-        return redirect()->intended(RouteServiceProvider::HOME);
     }
 
     /**
