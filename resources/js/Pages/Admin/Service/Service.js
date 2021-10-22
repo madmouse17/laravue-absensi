@@ -10,4 +10,7 @@ export default class UserService {
     getEmploye() {
         return axios.get("/admin/employe/json").then((res) => res.data.data);
     }
+    getAbsensi() {
+        return axios.get("/employe/absensi/json").then((res) => res.data.data);
+    }
 }

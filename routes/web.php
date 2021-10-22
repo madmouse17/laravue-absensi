@@ -4,12 +4,13 @@ use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
 use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Redirect;
 use App\Http\Controllers\EmployeController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\PositionController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\Pegawai\HomeController;
-use Illuminate\Support\Facades\Redirect;
+use App\Http\Controllers\Pegawai\AbsensiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -60,9 +61,13 @@ Route::group(['prefix' => 'employe',  'middleware' => ['auth', 'role:pegawai']],
     Route::post('/attendance/out', [AttendanceController::class, 'out'])->name('attendance.out');
     Route::post('/attendance/permission', [AttendanceController::class, 'permission'])->name('attendance.permission');
 
+    //json
+    Route::get('/absensi/json', [AbsensiController::class, 'json']);
+
     Route::get('/presensi/permission/', ['as' => 'permission', HomeController::class, 'permission'])->name('presensi.permission');
     Route::resource('/presensi', HomeController::class);
     Route::resource('/attendance', AttendanceController::class);
+    Route::resource('/absensi', AbsensiController::class);
 });
 
 

@@ -91,7 +91,7 @@ class EmployeController extends Controller
                 'nip' => 'required'
             ]);
             $profile_name = $request->file('image');
-            $nama_file = time() . "_" . $profile_name->getClientOriginalName();
+            $nama_file = time() . "_" . str_replace(' ', '', $profile_name->getClientOriginalName());
             Storage::putFileAs('public/pegawai/', $profile_name, $nama_file);
             if ($request->user_id) {
                 Employe::create([
@@ -166,7 +166,7 @@ class EmployeController extends Controller
                 'nip' => 'required'
             ]);
             $profile_name = $request->file('image');
-            $nama_file = time() . "_" . $profile_name->getClientOriginalName();
+            $nama_file = time() . "_" . str_replace(' ', '', $profile_name->getClientOriginalName());
             Storage::putFileAs('public/pegawai/', $profile_name, $nama_file);
             if ($request->user_id) {
                 $employe->update([

@@ -100,16 +100,9 @@
                             >
 
                             <MenuLink
-                                href="#"
-                                class="
-                                    text-gray-300
-                                    hover:bg-gray-700 hover:text-white
-                                    px-3
-                                    py-2
-                                    rounded-md
-                                    text-sm
-                                    font-medium
-                                "
+                                :href="route('absensi.index')"
+                                :active="route().current('absensi.*')"
+                                class="px-3 py-2 rounded-md text-sm font-medium"
                                 >Data Absensi</MenuLink
                             >
                         </div>
@@ -148,11 +141,23 @@
                                 @click="drop"
                             >
                                 <span class="sr-only">Open user menu</span>
-                                <img
+                                <h1
+                                    class="
+                                        px-3
+                                        py-2
+                                        rounded-md
+                                        text-sm
+                                        font-medium
+                                        text-gray-300
+                                    "
+                                >
+                                    {{ $page.props.auth.user.name }}
+                                </h1>
+                                <!-- <img
                                     class="h-8 w-8 rounded-full"
                                     src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
                                     alt=""
-                                />
+                                /> -->
                             </button>
                         </div>
 
@@ -184,6 +189,7 @@
                                 bg-white
                                 ring-1 ring-black ring-opacity-5
                                 focus:outline-none
+                                z-40
                             "
                             role="menu"
                             aria-orientation="vertical"
@@ -230,33 +236,17 @@
             <div class="px-2 pt-2 pb-3 space-y-1">
                 <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
                 <MenuLink
-                    href="#"
-                    class="
-                        bg-gray-900
-                        text-white
-                        block
-                        px-3
-                        py-2
-                        rounded-md
-                        text-base
-                        font-medium
-                    "
+                    :href="route('presensi.index')"
+                    :active="route().current('presensi.*')"
+                    class="block px-3 py-2 rounded-md text-base font-medium"
                     aria-current="page"
                     >Dashboard</MenuLink
                 >
 
                 <MenuLink
-                    href="#"
-                    class="
-                        text-gray-300
-                        hover:bg-gray-700 hover:text-white
-                        block
-                        px-3
-                        py-2
-                        rounded-md
-                        text-base
-                        font-medium
-                    "
+                    :href="route('absensi.index')"
+                    :active="route().current('absensi.*')"
+                    class="block px-3 py-2 rounded-md text-base font-medium"
                     >Data Absensi</MenuLink
                 >
             </div>
@@ -266,9 +256,6 @@
 <script>
 import MenuLink from "@/Components/notus/Navbars/MenuLink";
 export default {
-    props: {
-        auth: Object,
-    },
     components: {
         MenuLink,
     },

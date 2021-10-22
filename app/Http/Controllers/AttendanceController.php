@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Carbon\Carbon;
 use App\Models\Attendance;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
@@ -47,6 +48,7 @@ class AttendanceController extends Controller
             'attended_at' => Carbon::now()->format('Y-m-d'),
             'in' => Carbon::now()->format('H:i:s')
         ]);
+        return Redirect::route('absensi.index')->with('message', 'Absen masuk Berhasil');
     }
     public function out(Request $request)
     {
@@ -56,6 +58,7 @@ class AttendanceController extends Controller
         $attend->update([
             'out' => Carbon::now()->format('H:i:s')
         ]);
+        return Redirect::route('absensi.index')->with('message', 'Absen pulang Berhasil');
     }
 
     public function permission(Request $request)
@@ -66,7 +69,7 @@ class AttendanceController extends Controller
             'image' => 'required|mimes:jpg,jpeg,png|max:2000'
         ]);
         $profile_name = $request->file('image');
-        $nama_file = time() . "_" . $profile_name->getClientOriginalName();
+        $nama_file = time() . "_" . str_replace(' ', '', $profile_name->getClientOriginalName());
         Storage::putFileAs('public/permission/', $profile_name, $nama_file);
         foreach ($request->attend as $value) {
             Attendance::create([
@@ -76,6 +79,7 @@ class AttendanceController extends Controller
                 'desc' => $request->desc,
             ]);
         }
+        return Redirect::route('absensi.index')->with('message', 'Ijin Berhasil Dibuat');
     }
 
     /**
