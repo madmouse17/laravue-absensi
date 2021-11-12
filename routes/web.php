@@ -11,6 +11,7 @@ use App\Http\Controllers\PositionController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\Pegawai\HomeController;
 use App\Http\Controllers\Pegawai\AbsensiController;
+use App\Http\Controllers\Pegawai\AccountController;
 
 /*
 |--------------------------------------------------------------------------
@@ -68,6 +69,7 @@ Route::group(['prefix' => 'employe',  'middleware' => ['auth', 'role:pegawai']],
     Route::resource('/presensi', HomeController::class);
     Route::resource('/attendance', AttendanceController::class);
     Route::resource('/absensi', AbsensiController::class);
+    Route::resource('/account', AccountController::class);
 });
 
 

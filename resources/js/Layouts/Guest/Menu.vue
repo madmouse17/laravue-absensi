@@ -198,7 +198,7 @@
                         >
                             <!-- Active: "bg-gray-100", Not Active: "" -->
                             <MenuLink
-                                href="#"
+                                :href="route('account.index')"
                                 class="block px-4 py-2 text-sm text-gray-700"
                                 role="menuitem"
                                 tabindex="-1"
@@ -206,7 +206,7 @@
                                 >Akun</MenuLink
                             >
                             <MenuLink
-                                href="#"
+                                href=""
                                 class="block px-4 py-2 text-sm text-gray-700"
                                 role="menuitem"
                                 tabindex="-1"
@@ -214,11 +214,12 @@
                                 >Ubah Password</MenuLink
                             >
                             <MenuLink
-                                href="#"
+                                :href="route('logout')"
                                 class="block px-4 py-2 text-sm text-gray-700"
                                 role="menuitem"
                                 tabindex="-1"
                                 id="user-menu-item-2"
+                                method="post"
                                 >Keluar</MenuLink
                             >
                         </div>

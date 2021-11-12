@@ -1,5 +1,7 @@
 <template>
     <Menu />
+    <Head title="Home" />
+    <Toast />
     <center>
         <Card
             style="width: 25rem; margin-bottom: 2em"
@@ -25,12 +27,16 @@
 import * as faceapi from "face-api.js";
 import Menu from "@/Layouts/Guest/Menu";
 import Card from "primevue/card";
+import Toast from "primevue/toast";
+import { Head } from "@inertiajs/inertia-vue3";
 export default {
     components: {
         Menu,
         Card,
+        Toast,
+        Head,
     },
-    props: ["image"],
+    props: ["image", "flash"],
     data() {
         return {
             form: this.$inertia.form({
@@ -40,6 +46,7 @@ export default {
     },
     video: $("#inputVideo").get(0),
     mounted() {
+        this.successAlert();
         Promise.all([
             faceapi.nets.tinyFaceDetector.loadFromUri("/js/weights/"),
             faceapi.nets.faceLandmark68Net.loadFromUri("/js/weights/"),
@@ -130,6 +137,16 @@ export default {
                     );
                 })
             );
+        },
+        successAlert() {
+            if (this.flash.message != null) {
+                this.$toast.add({
+                    severity: "success",
+                    summary: "Success Message",
+                    detail: this.flash.message,
+                    life: 3000,
+                });
+            }
         },
     },
     computed: {

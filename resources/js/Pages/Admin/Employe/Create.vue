@@ -24,7 +24,7 @@
                         </FileUpload>
                         <Validation class="mb-4" :validate="errors.image" />
                         <div class="flex flex-wrap">
-                            <Label title="Nama"
+                            <Label title="Nama Lengkap"
                                 ><Input
                                     placeholder="Masukkan Nama"
                                     type="text"

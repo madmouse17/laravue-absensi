@@ -101,8 +101,9 @@
                 Something else here
             </a>
             <div class="h-0 my-2 border border-solid border-blueGray-100" />
-            <Link
+            <NavbarLink
                 :href="route('logout')"
+                :active="route('logout')"
                 class="
                     text-sm
                     py-2
@@ -115,22 +116,22 @@
                     text-blueGray-700
                 "
                 method="post"
-                as="button"
             >
                 Keluar
-            </Link>
+            </NavbarLink>
         </div>
     </div>
 </template>
 
 <script>
 import { createPopper } from "@popperjs/core";
-
+import NavbarLink from "@/Components/notus/Navbars/NavLink";
 import image from "@/img/team-1-800x800.jpg";
 import { Link } from "@inertiajs/inertia-vue3";
 
 export default {
     components: {
+        NavbarLink,
         Link,
     },
     data() {

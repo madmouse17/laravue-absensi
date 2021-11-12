@@ -133,7 +133,7 @@
                             ></Column>
                             <Column
                                 field="name"
-                                header="Nama"
+                                header="Nama Lengkap"
                                 :sortable="true"
                             ></Column>
                             <Column

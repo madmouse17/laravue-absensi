@@ -1,5 +1,6 @@
 <template>
     <Menu />
+    <Head title="Presensi" />
     <center>
         <Card
             style="width: 25rem; margin-bottom: 2em"
@@ -68,6 +69,7 @@
     </center>
 </template>
 <script>
+import { Head } from "@inertiajs/inertia-vue3";
 import Menu from "@/Layouts/Guest/Menu";
 import Card from "primevue/card";
 import Avatar from "primevue/avatar";
@@ -80,6 +82,7 @@ export default {
         Card,
         Avatar,
         Button,
+        Head,
     },
     data() {
         return {

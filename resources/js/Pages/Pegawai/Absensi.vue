@@ -1,6 +1,7 @@
 <template>
     <Toast />
     <Menu />
+    <Head title="Absensi" />
     <Card>
         <template #content>
             <DataTable
@@ -97,6 +98,7 @@
 </template>
 <script>
 import AbsenService from "../Admin/Service/Service";
+import { Head } from "@inertiajs/inertia-vue3";
 import Menu from "@/Layouts/Guest/Menu";
 import Toast from "primevue/toast";
 import DataTable from "primevue/datatable";
@@ -113,6 +115,7 @@ export default {
         Column,
         Card,
         Calendar,
+        Head,
     },
     data() {
         return {

@@ -1,6 +1,7 @@
 <template>
     <Toast />
     <Menu />
+    <Head title="Ijin" />
     <center>
         <form @submit.prevent="Submit">
             <Card style="width: 50rem; margin-bottom: 2em; margin-top: 5em">
@@ -63,6 +64,7 @@
     </center>
 </template>
 <script>
+import { Head } from "@inertiajs/inertia-vue3";
 import Menu from "@/Layouts/Guest/Menu";
 import Calendar from "primevue/calendar";
 import FileUpload from "primevue/fileupload";
@@ -79,6 +81,7 @@ export default {
         Card,
         Button,
         Textarea,
+        Head,
     },
     props: { presen: Object },
     data() {
