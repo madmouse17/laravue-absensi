@@ -60,7 +60,7 @@ import Card from "primevue/card";
 import Avatar from "primevue/avatar";
 import InputText from "primevue/inputtext";
 import Button from "primevue/button";
-import Validation from "@/Components/notus/Validation/ValidationError.vue";
+import Validation from "@/Components/notus/Validation/ValidationError";
 export default {
     props: { employe: Object, url: Object, errors: Object },
     components: {

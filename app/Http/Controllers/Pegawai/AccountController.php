@@ -6,9 +6,11 @@ use App\Models\User;
 use Inertia\Inertia;
 use App\Models\Employe;
 use Illuminate\Http\Request;
+use App\Rules\MatchOldPassword;
 use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 
@@ -33,7 +35,7 @@ class AccountController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('Pegawai/ChangePass');
     }
 
     /**
@@ -44,7 +46,15 @@ class AccountController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'password_lama' => ['required', new MatchOldPassword],
+            'password_baru' => ['required', 'min:8'],
+            'confirm_password_baru' => ['same:password_baru'],
+        ]);
+
+        User::find(auth()->user()->id)->update(['password' => Hash::make($request->password_baru)]);
+
+        return Redirect::route('presensi.index')->with('message',   'Password Berhasil Diupdate');
     }
 
     /**
