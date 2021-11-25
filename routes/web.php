@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Redirect;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\EmployeController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\PositionController;
@@ -45,6 +46,7 @@ Route::group(['prefix' => 'admin',  'middleware' => ['auth', 'role:admin']], fun
     Route::get('/user/json', [UserController::class, 'json']);
     Route::get('/position/json', [PositionController::class, 'json']);
     Route::get('/employe/json', [EmployeController::class, 'json']);
+    Route::get('/attendance/json', [ReportController::class, 'json']);
 
     //Delete All
     Route::delete('user/destroy-all/{id}', [UserController::class, 'deleteAll'])->name('user.deleteAll');
@@ -57,6 +59,7 @@ Route::group(['prefix' => 'admin',  'middleware' => ['auth', 'role:admin']], fun
     Route::resource('/employe', EmployeController::class);
 
     Route::resource('/location', LocationController::class);
+    Route::resource('/report', ReportController::class);
 });
 Route::group(['prefix' => 'employe',  'middleware' => ['auth', 'role:pegawai']], function () {
     Route::post('/attendance/out', [AttendanceController::class, 'out'])->name('attendance.out');

@@ -14,6 +14,6 @@ class Attendance extends Model
 
     public function employe()
     {
-        return $this->hasMany(Employe::class);
+        return $this->belongsTo(Employe::class);
     }
 }

@@ -23,6 +23,6 @@ class Employe extends Model
     }
     public function attedance()
     {
-        return $this->belongsTo(Attendance::class);
+        return $this->hasMany(Attendance::class);
     }
 }

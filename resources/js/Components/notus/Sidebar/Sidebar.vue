@@ -287,6 +287,38 @@
                         </NavbarLink>
                     </li>
                 </ul>
+                <hr class="my-4 md:min-w-full" />
+                <h6
+                    class="
+                        md:min-w-full
+                        text-blueGray-500 text-xs
+                        uppercase
+                        font-bold
+                        block
+                        pt-1
+                        pb-4
+                        no-underline
+                    "
+                >
+                    Laporan
+                </h6>
+                <ul class="md:flex-col md:min-w-full flex flex-col list-none">
+                    <li class="items-center">
+                        <NavbarLink
+                            :href="route('report.index')"
+                            :active="route().current('report.*')"
+                            class="text-xs uppercase py-3 font-bold block"
+                        >
+                            <IconLink
+                                :href="route('report.index')"
+                                :active="route().current('report.*')"
+                                class="fas fa-calendar mr-2 text-sm"
+                            >
+                            </IconLink>
+                            Absensi
+                        </NavbarLink>
+                    </li>
+                </ul>
             </div>
         </div>
     </nav>
