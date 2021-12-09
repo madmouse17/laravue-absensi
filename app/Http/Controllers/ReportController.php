@@ -74,10 +74,14 @@ class ReportController extends Controller
                 'employee' => $row,
                 'masuk' => $row->whereNotNull('in')->count(),
                 'ijin' => $row->whereNotNull('permission')->count(),
+                'gaji' => $row[0]->employe->position['gaji'],
+                'karyawan' => $row[0]->employe['name'],
+                'jabatan' => $row[0]->employe->position['name']
             ];
         });
 
-        $pdf = PDF::loadView('report', ['employe' => $employe]);
+
+        $pdf = PDF::loadView('report', ['data' => $employe]);
         return $pdf->download($dari . ' sampai ' . $sampai . '.pdf');
     }
 

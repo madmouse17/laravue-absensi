@@ -9,6 +9,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\EmployeController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\PositionController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\Pegawai\HomeController;
 use App\Http\Controllers\Pegawai\AbsensiController;
@@ -38,9 +39,7 @@ Route::get('/', function () {
 });
 
 Route::group(['prefix' => 'admin',  'middleware' => ['auth', 'role:admin']], function () {
-    Route::get('/dashboard', function () {
-        return Inertia::render('Admin/Dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     //RETURN JSON
     Route::get('/user/json', [UserController::class, 'json']);
@@ -61,6 +60,8 @@ Route::group(['prefix' => 'admin',  'middleware' => ['auth', 'role:admin']], fun
     Route::resource('/location', LocationController::class);
     Route::resource('/report', ReportController::class);
 });
+
+
 Route::group(['prefix' => 'employe',  'middleware' => ['auth', 'role:pegawai']], function () {
     Route::post('/attendance/out', [AttendanceController::class, 'out'])->name('attendance.out');
     Route::post('/attendance/permission', [AttendanceController::class, 'permission'])->name('attendance.permission');

@@ -21,7 +21,7 @@ class Employe extends Model
     {
         return $this->belongsTo(Position::class);
     }
-    public function attedance()
+    public function attendance()
     {
         return $this->hasMany(Attendance::class);
     }

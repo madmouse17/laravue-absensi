@@ -24,10 +24,10 @@
                             font-semibold
                         "
                     >
-                        Overview
+                        {{ year }}
                     </h6>
                     <h2 class="text-white text-xl font-semibold">
-                        Sales value
+                        Chart Absensi
                     </h2>
                 </div>
             </div>
@@ -44,30 +44,27 @@
 import Chart from "chart.js";
 
 export default {
+    props: ["data", "month", "year"],
     mounted: function () {
+        console.log(
+            "this.data.total_absensi[0] :>> ",
+            this.data[0].total_absensi
+        );
         this.$nextTick(function () {
             var config = {
                 type: "line",
                 data: {
-                    labels: [
-                        "January",
-                        "February",
-                        "March",
-                        "April",
-                        "May",
-                        "June",
-                        "July",
-                    ],
+                    labels: this.month,
                     datasets: [
                         {
-                            label: new Date().getFullYear(),
+                            label: "Masuk",
                             backgroundColor: "#4c51bf",
                             borderColor: "#4c51bf",
-                            data: [65, 78, 66, 44, 56, 67, 75],
+                            data: this.data,
                             fill: false,
                         },
                         {
-                            label: new Date().getFullYear() - 1,
+                            label: "Ijin",
                             fill: false,
                             backgroundColor: "#fff",
                             borderColor: "#fff",

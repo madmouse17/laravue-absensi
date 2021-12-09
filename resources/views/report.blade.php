@@ -18,13 +18,17 @@
 </head>
 
 <body>
-    @foreach ($employe as $e)
+    @foreach ($data as $e)
 
+    <div class="d-flex flex-column mb-3 align-items-end">
+        <div class="p-2">Nama Karyawan = {{ $e['karyawan'] }}</div>
+    </div>
+    <div class="p-2">Jabatan = {{ $e['jabatan'] }}</div>
+    <div class="p-2">Gaji = {{ $e['gaji'] }}</div>
     <table class="table table-bordered">
         <thead>
             <tr>
                 <th>No</th>
-                <th>Nama</th>
                 <th>Jabatan</th>
                 <th>Tanggal</th>
                 <th>Masuk</th>
@@ -36,7 +40,6 @@
             @foreach ($e['employee'] as $employee)
             <tr>
                 <td>{{ $loop->iteration }}</td>
-                <td>{{ $employee->employe->name }}</td>
                 <td>{{ $employee->employe->position->name}}</td>
                 <td>{{ $employee->attended_at }}</td>
                 <td @if ($employee->in ==null )
@@ -50,13 +53,13 @@
                 <td @if ($employee->out ==null )
                     bgcolor="red"
                     @endif>{{ $employee->out }}</td>
-
             </tr>
             @endforeach
         </tbody>
     </table>
-    JumlahMasuk = {{ $e['masuk'] }}
-    JumlahIjin = {{ $e['ijin'] }}
+    Jumlah Masuk = {{ $e['masuk'] }}
+    Jumlah Ijin = {{ $e['ijin'] }}
+    Total Gaji = {{ ($e['masuk']+$e['ijin'])*$e['gaji'] }}
     <div class="page-break"></div>
     @endforeach
 </body>

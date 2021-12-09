@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
+use Inertia\Inertia;
+use App\Models\Attendance;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
@@ -13,8 +17,19 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        //
+        $now = Carbon::now()->format('Y');
+        $month = [];
+        $count = [];
+
+        for ($m = 1; $m <= 12; $m++) {
+            $month[] = date('F', mktime(0, 0, 0, $m, 1, date('Y')));
+            $count[] = Attendance::whereMonth('attended_at', $m)->whereYear('attended_at', $now)->whereNotNull('in')->count();
+        }
+
+        return Inertia::render('Admin/Dashboard', ['count' => $count, 'month' => $month, 'now' => $now]);
     }
+
+
 
     /**
      * Show the form for creating a new resource.
