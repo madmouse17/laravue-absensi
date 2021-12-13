@@ -17,16 +17,24 @@ class DashboardController extends Controller
      */
     public function index()
     {
+        //chart absensi
         $now = Carbon::now()->format('Y');
         $month = [];
         $count = [];
+        $permission = [];
 
         for ($m = 1; $m <= 12; $m++) {
             $month[] = date('F', mktime(0, 0, 0, $m, 1, date('Y')));
             $count[] = Attendance::whereMonth('attended_at', $m)->whereYear('attended_at', $now)->whereNotNull('in')->count();
+            $permission[] = Attendance::whereMonth('attended_at', $m)->whereYear('attended_at', $now)->whereNotNull('permission')->count();
         }
 
-        return Inertia::render('Admin/Dashboard', ['count' => $count, 'month' => $month, 'now' => $now]);
+        //tabel absensi
+        $date_now = Carbon::now()->format('Y-m-d');
+        $absensi = Attendance::with('employe')->where('attended_at', $date_now)->latest()->take(5)->get();
+
+
+        return Inertia::render('Admin/Dashboard', ['count' => $count, 'month' => $month, 'now' => $now, 'permission' => $permission, 'absensi' => $absensi]);
     }
 
 

@@ -44,12 +44,8 @@
 import Chart from "chart.js";
 
 export default {
-    props: ["data", "month", "year"],
+    props: ["data", "month", "year", "permission"],
     mounted: function () {
-        console.log(
-            "this.data.total_absensi[0] :>> ",
-            this.data[0].total_absensi
-        );
         this.$nextTick(function () {
             var config = {
                 type: "line",
@@ -68,7 +64,7 @@ export default {
                             fill: false,
                             backgroundColor: "#fff",
                             borderColor: "#fff",
-                            data: [40, 68, 86, 74, 56, 60, 87],
+                            data: this.permission,
                         },
                     ],
                 },

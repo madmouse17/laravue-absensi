@@ -117,6 +117,11 @@
                                 header="Pulang"
                                 :sortable="true"
                             ></Column>
+                            <Column
+                                field="desc"
+                                header="Ket"
+                                :sortable="true"
+                            ></Column>
 
                             <!-- <Column field="color" header="Color"></Column> -->
                         </DataTable>

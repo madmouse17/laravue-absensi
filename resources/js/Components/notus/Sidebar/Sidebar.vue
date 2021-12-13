@@ -71,7 +71,7 @@
                 "
                 to="/"
             >
-                Vue Notus
+                Sistem Absensi VerMuk
             </inertia-link>
             <!-- User -->
             <ul class="md:hidden items-center flex flex-wrap list-none">

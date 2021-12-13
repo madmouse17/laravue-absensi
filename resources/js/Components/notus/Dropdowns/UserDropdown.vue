@@ -11,7 +11,7 @@
                     class="
                         w-12
                         h-12
-                        text-sm text-white
+                        text-sm text-green
                         bg-blueGray-200
                         inline-flex
                         items-center
@@ -19,7 +19,7 @@
                         rounded-full
                     "
                 >
-                    <img
+                    <!-- <img
                         alt="..."
                         class="
                             w-full
@@ -29,7 +29,8 @@
                             shadow-lg
                         "
                         :src="image"
-                    />
+                    /> -->
+                    {{ $page.props.auth.user.name }}
                 </span>
             </div>
         </a>
