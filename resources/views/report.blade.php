@@ -59,6 +59,7 @@
     </table>
     Jumlah Masuk = {{ $e['masuk'] }}
     Jumlah Ijin = {{ $e['ijin'] }}
+    Jumlah Alpha= {{ $e['alpha'] }}
     Total Gaji = {{ ($e['masuk']+$e['ijin'])*$e['gaji'] }}
     <div class="page-break"></div>
     @endforeach

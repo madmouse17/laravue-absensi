@@ -1,7 +1,10 @@
 <?php
 
+use App\Models\Attendance;
+use App\Models\Employe;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
+use Carbon\Carbon;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,3 +20,13 @@ use Illuminate\Support\Facades\Artisan;
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
+
+Artisan::command('att_date', function () {
+    $em = Employe::get();
+    foreach ($em as  $value) {
+        Attendance::create([
+            'employe_id' => $value->id,
+            'attended_at' => Carbon::now()->format('Y-m-d'),
+        ]);
+    }
+})->purpose('Insert date in Attendance');

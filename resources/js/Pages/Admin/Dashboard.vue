@@ -9,6 +9,7 @@
                         :month="month"
                         :year="now"
                         :permission="permission"
+                        :alpha="alpha"
                     />
                 </div>
             </div>
@@ -26,7 +27,7 @@ import CardPageVisits from "@/Components/notus/Cards/CardPageVisits.vue";
 import AdminLayouts from "@/Layouts/Admin.vue";
 import { Head } from "@inertiajs/inertia-vue3";
 export default {
-    props: ["count", "month", "now", "permission", "absensi"],
+    props: ["count", "month", "alpha", "now", "permission", "absensi"],
     components: {
         CardLineChart,
         CardPageVisits,

@@ -44,7 +44,7 @@
 import Chart from "chart.js";
 
 export default {
-    props: ["data", "month", "year", "permission"],
+    props: ["data", "month", "year", "permission", "alpha"],
     mounted: function () {
         this.$nextTick(function () {
             var config = {
@@ -65,6 +65,13 @@ export default {
                             backgroundColor: "#fff",
                             borderColor: "#fff",
                             data: this.permission,
+                        },
+                        {
+                            label: "Alpha",
+                            fill: false,
+                            backgroundColor: "#ff0000",
+                            borderColor: "#ff0000",
+                            data: this.alpha,
                         },
                     ],
                 },
