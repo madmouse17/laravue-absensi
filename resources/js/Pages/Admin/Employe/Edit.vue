@@ -16,7 +16,7 @@
                             accept="image/*"
                             v-model="form.image"
                             @upload="onUpload"
-                            :maxFileSize="2000000"
+                            :maxFileSize="10000000"
                         >
                             <template #empty>
                                 <p>Upload Foto Pegawai Disini</p>

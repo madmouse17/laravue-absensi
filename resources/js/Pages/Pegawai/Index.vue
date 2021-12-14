@@ -85,7 +85,9 @@ export default {
                     const results = resizedDetections.map((d) =>
                         faceMatcher.findBestMatch(d.descriptor)
                     );
+
                     results.forEach((result, i) => {
+                        console.log("result :>> ", result);
                         const box = resizedDetections[i].detection.box;
                         const drawBox = new faceapi.draw.DrawBox(box, {
                             label: result.toString(),

@@ -23,7 +23,7 @@
                 </table>
             </template>
             <template #footer>
-                <div v-if="attend == null">
+                <div v-if="attend.in == null && attend.permission == null">
                     <template v-if="distance.d <= locate.radius">
                         <form @submit.prevent="submitIn">
                             <Button
@@ -43,25 +43,25 @@
                         />
                     </form>
                 </div>
+                <div v-if="attend.in !== null && attend.out == null">
+                    <form @submit.prevent="submitOut">
+                        <Button
+                            icon="pi pi-arrow-left"
+                            class="p-button-secondary"
+                            label="Pulang"
+                            style="margin-left: 0.5em"
+                            type="submit"
+                        />
+                    </form>
+                </div>
                 <template v-if="distance.d <= locate.radius && attend">
                     <div v-if="attend.in && attend.out">
                         <h1 style="font-weght: bold">
                             Sudah Melakukan Absensi Hari ini
                         </h1>
                     </div>
-                    <div v-else-if="attend.permission">
+                    <div v-if="attend.permission">
                         <h1 style="font-weght: bold">Anda Ijin hari ini</h1>
-                    </div>
-                    <div v-else>
-                        <form @submit.prevent="submitOut">
-                            <Button
-                                icon="pi pi-arrow-left"
-                                class="p-button-secondary"
-                                label="Pulang"
-                                style="margin-left: 0.5em"
-                                type="submit"
-                            />
-                        </form>
                     </div>
                 </template>
             </template>

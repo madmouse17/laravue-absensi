@@ -43,17 +43,27 @@ class AttendanceController extends Controller
         Validator::make($request->all(), [
             'in' => 'required'
         ]);
-        Attendance::create([
-            'employe_id' => $request->employe_id,
-            'attended_at' => Carbon::now()->format('Y-m-d'),
-            'in' => Carbon::now()->format('H:i:s')
-        ]);
+        $now = Carbon::now()->format('Y-m-d');
+        $att = Attendance::where('attended_at', $now)->where('employe_id', $request->employe_id)->first();
+        if ($att->attended_at == $now && $att->employe_id == $request->employe_id) {
+            $att->update([
+                'in' => Carbon::now()->format('H:i:s')
+            ]);
+        } else {
+            Attendance::create([
+                'employe_id' => $request->employe_id,
+                'attended_at' => Carbon::now()->format('Y-m-d'),
+                'in' => Carbon::now()->format('H:i:s')
+            ]);
+        }
+
+
         return Redirect::route('absensi.index')->with('message', 'Absen masuk Berhasil');
     }
     public function out(Request $request)
     {
         $now = Carbon::now()->format('Y-m-d');
-        $attend = Attendance::where('attended_at', $now)->where('employe_id', $request->employe_id)->first();
+        $attend = Attendance::where('attended_at', $now)->where('employe_id', $request->employe_id)->whereNotNull('in')->first();
 
         $attend->update([
             'out' => Carbon::now()->format('H:i:s')
@@ -63,6 +73,8 @@ class AttendanceController extends Controller
 
     public function permission(Request $request)
     {
+
+
         Validator::make($request->all(), [
             'attend' => 'required',
             'desc' => 'required',
@@ -70,14 +82,31 @@ class AttendanceController extends Controller
         ]);
         $profile_name = $request->file('image');
         $nama_file = time() . "_" . str_replace(' ', '', $profile_name->getClientOriginalName());
+        $count = count($request->attend) - 1;
+        $attend = $request->attend;
+        $addDays = [1 => Carbon::parse($request->attend[1])->addDay($count)->format('Y-m-d')];
+        $replace = array_replace($attend, $addDays);
         Storage::putFileAs('public/permission/', $profile_name, $nama_file);
-        foreach ($request->attend as $value) {
-            Attendance::create([
-                'employe_id' => $request->employe_id,
-                'attended_at' => Carbon::parse($value)->format('y-m-d'),
-                'permission' => $nama_file,
-                'desc' => $request->desc,
-            ]);
+
+        $now = Carbon::now()->format('Y-m-d');
+        $att = Attendance::where('attended_at', $now)->where('employe_id', $request->employe_id)->first();
+
+        foreach ($replace as $value) {
+
+            if ($att->attended_at ==  Carbon::parse($value)->format('Y-m-d') && $att->employe_id == $request->employe_id) {
+
+                $att->update([
+                    'permission' => $nama_file,
+                    'desc' => $request->desc,
+                ]);
+            } else {
+                Attendance::create([
+                    'permission' => $nama_file,
+                    'desc' => $request->desc,
+                    'employe_id' => $request->employe_id,
+                    'attended_at' => Carbon::parse($value)->format('y-m-d'),
+                ]);
+            }
         }
         return Redirect::route('absensi.index')->with('message', 'Ijin Berhasil Dibuat');
     }

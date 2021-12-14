@@ -87,7 +87,7 @@ class EmployeController extends Controller
                 'position_id' => 'required',
                 'gender' => 'required',
                 'birthdate' => 'required',
-                'image' => 'required|mimes:jpg,jpeg,png,webp,svg|max:2000',
+                'image' => 'required|mimes:jpg,jpeg,png,webp,svg|max:10000',
                 'nip' => 'required'
             ]);
             $profile_name = $request->file('image');
@@ -162,7 +162,7 @@ class EmployeController extends Controller
                 'position_id' => 'required',
                 'gender' => 'required',
                 'birthdate' => 'required',
-                'image' => 'required|mimes:jpg,jpeg,png,webp,svg|max:2000',
+                'image' => 'required|mimes:jpg,jpeg,png,webp,svg|max:10000',
                 'nip' => 'required'
             ]);
             $profile_name = $request->file('image');
