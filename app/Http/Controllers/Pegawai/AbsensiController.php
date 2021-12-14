@@ -39,6 +39,10 @@ class AbsensiController extends Controller
         ]);
 
         return Datatables::of($employes)
+            ->addColumn('url', function ($attendance) {
+                $url = asset('storage/permission/' . $attendance->permission);
+                return $url;
+            })
             ->make(true);
     }
 

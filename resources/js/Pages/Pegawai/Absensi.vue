@@ -60,12 +60,15 @@
                     :sortable="true"
                     style="min-width: 10rem"
                 ></Column>
-                <Column
-                    field="permission"
-                    header="Ijin"
-                    :sortable="true"
-                    style="min-width: 10rem"
-                >
+                <Column header="Ijin">
+                    <template #body="slotProps">
+                        <img
+                            :src="slotProps.data.url"
+                            :alt="slotProps.data.permission"
+                            class="table-image"
+                        />
+                    </template>
+
                     <!-- <template #body="slotProps">
                                     <Badge
                                         :value="slotProps.data.roles"
