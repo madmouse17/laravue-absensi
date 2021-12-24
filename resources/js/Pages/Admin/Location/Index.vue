@@ -75,11 +75,21 @@ export default {
             lat: {},
         };
     },
+    created() {
+        console.log("up :>> ", this.locate);
+    },
     mounted() {
+        console.log("mount :>> ", this.locate);
         this.onWindowLoad();
         this.successAlert();
     },
+    beforeUpdate() {
+        this.load();
+    },
     methods: {
+        load() {
+            console.log("this.locate :>> ", this.locate);
+        },
         onWindowLoad() {
             L.mapquest.key = "bHGSG3mk9KmuGZmXDPnBgzUGIdd8kGAF";
             var popup = L.popup();
@@ -123,7 +133,7 @@ export default {
             }
         },
         findIndexById(id) {
-            let index = -1;
+            let index = 1;
             for (let i = 0; i < this.locate.length; i++) {
                 if (this.locate[i].id === id) {
                     index = i;
@@ -136,12 +146,18 @@ export default {
 
         submit() {
             this.locate[this.findIndexById(1)] = this.lat.lat;
+            if (this.locate.id == 1) {
+                this.locate.lat = this.lat.lat.lat;
+                this.locate.lng = this.lat.lat.lng;
+            }
             console.log(
                 "this.locate2 :>> ",
                 (this.locate[this.findIndexById(1)] = this.lat.lat)
             );
 
             Inertia.post(route("location.store", this.lat.lat));
+            console.log("this.locate3 :>> ", this.locate);
+            this.locate;
         },
         successAlert() {
             if (this.flash.message != null) {
