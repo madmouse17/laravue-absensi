@@ -38,7 +38,8 @@ ketikkan ini diterminal
 php artisan schedule:work
 ```
 Jika ingin mensetting task scheduller silahkan kunjungi link ini: https://laravel.com/docs/8.x/scheduling
-*NB:sebelum memulai absensi silahkan set lokasi dulu dan jangan lupa refresh web soalnya state nya masih belum bisa, jangan lupa membuat pegawai, jika absen melebihi radius yang ditentukan hanya bisa ijin saja, jika dijangkauan bisa absen masuk,ijin dan pulang, dan jangan lupa jalankan task scheduler.
+
+*\*NB:sebelum memulai absensi silahkan set lokasi dulu dan jangan lupa refresh web soalnya state nya masih belum bisa, jangan lupa membuat pegawai, jika absen melebihi radius yang ditentukan hanya bisa ijin saja, jika dijangkauan bisa absen masuk,ijin dan pulang, dan jangan lupa jalankan task scheduler.*
 
 ## User Interface
 
